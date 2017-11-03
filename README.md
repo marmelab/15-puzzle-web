@@ -20,7 +20,17 @@ Install the dependencies, compile the code and build the dockers
 make install
 ```
 
-### Run the game
+### Test
+
+Launch the unit and integration tests
+
+``` bash
+make test
+```
+
+## Run the project
+
+### Start the game
 
 Run the 15-puzzle game
 
@@ -28,13 +38,20 @@ Run the 15-puzzle game
 make run
 ```
 
-Note:
-The game will be available at `localhost:8080`
+Note: the game will be available at `localhost:8080`
 
-### Run the game
+### Stop the game
 
 Stop the 15-puzzle game
 
 ``` bash
 make stop
+```
+
+### Display the logs
+
+Display serveur and db logs
+
+``` bash
+make logs
 ```
