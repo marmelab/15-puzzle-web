@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\AppBundle\Controller;
+namespace Tests\App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HelloControllerTest extends WebTestCase
 {
-    public function testShowPost()
+    public function testHello()
     {
         $client = static::createClient();
 
