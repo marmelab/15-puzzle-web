@@ -6,6 +6,13 @@ help: ## Print all commands (default)
 install: ## Build the dockers
 	docker-compose build
 
+composer-install: ## run composer install within the host
+	docker-compose run --no-deps --rm \
+		php bash -ci './bin/composer install'
+
+connect-php: ## open ash session in php container as host user
+	docker-compose run --no-deps --rm php bash
+
 run: ## Run the 15-puzzle game
 	docker-compose up -d
 
@@ -14,4 +21,4 @@ stop: ## Stop 15-puzzle game
 
 test: ## Run all tests
 	docker build -t php docker/php
-	docker run -it --rm -v "${PWD}/app:/app" php phpunit -v
+	docker run -it --rm -v "${PWD}/app:/app" php bin/phpunit

@@ -3,7 +3,6 @@
     "license": "proprietary",
     "require": {
         "php": "^7.1",
-        "phpunit": "^6.4",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/console": "^3.3",
         "symfony/framework-bundle": "^3.3",
@@ -11,13 +10,15 @@
     },
     "require-dev": {
         "symfony/flex": "^1.0",
-        "symfony/dotenv": "^3.3"
+        "symfony/dotenv": "^3.3",
+        "phpunit/phpunit": "^6.4"
     },
     "config": {
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "bin-dir": "bin"
     },
     "autoload": {
         "psr-4": {
