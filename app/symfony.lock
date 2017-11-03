@@ -229,5 +229,20 @@
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
+    },
+    "twig/twig": {
+        "version": "v2.4.4"
+    },
+    "symfony/twig-bridge": {
+        "version": "v3.3.10"
+    },
+    "symfony/twig-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "42324de95dde296ef158f48d6cf7fefddd18da7d"
+        }
     }
 }
