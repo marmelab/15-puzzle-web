@@ -1,0 +1,7 @@
+index:
+   path: /
+   defaults: { _controller: 'App\Controller\MainController::start' }
+
+hello:
+    path: /hello
+    defaults: { _controller: 'App\Controller\HelloController::start' }
