@@ -1,12 +1,7 @@
 index:
    path: /
-   defaults: { _controller: 'App\Controller\HelloController::start' }
+   defaults: { _controller: 'App\Controller\MainController::start' }
 
-# app_controller:
-#     path: /hello
-#     controller: App\Controller\HelloController::start
-
-# first, run composer req annotations
-# controllers:
-#    resource: ../src/Controller/
-#    type: annotation
+hello:
+    path: /hello
+    defaults: { _controller: 'App\Controller\HelloController::start' }

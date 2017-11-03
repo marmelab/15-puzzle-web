@@ -2,7 +2,8 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.0.8",
+        "php": "^7.1",
+        "phpunit": "^6.4",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/console": "^3.3",
         "symfony/framework-bundle": "^3.3",

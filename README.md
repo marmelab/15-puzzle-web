@@ -12,6 +12,14 @@ Print all available commands
 make
 ```
 
+### Install
+
+Install the dependencies, compile the code and build the dockers
+
+``` bash
+make install
+```
+
 ### Run the game
 
 Run the 15-puzzle game
