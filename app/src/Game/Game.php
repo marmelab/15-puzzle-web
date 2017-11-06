@@ -8,21 +8,21 @@ class Game {
 
   // Getters
 
-  public function getGrid() {
+  public function getGrid() : Array {
     return $this->grid;
   }
 
-  public function getInitialGrid() {
+  public function getInitialGrid() : Array {
     return $this->initialGrid;
   }
 
   // Setters
 
-  public function setGrid($grid) {
+  public function setGrid(Array $grid) {
     $this->grid = $grid;
   }
   
-  public function setInitialGrid($grid) {
+  public function setInitialGrid(Array $grid) {
     $this->initialGrid = $grid;
   }
 }

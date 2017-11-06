@@ -2,45 +2,50 @@
 
 namespace App\Api;
 
-use App\Api\GameSerializer;
+use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
+use App\Game\Game;
 
 class GameApi {
   private $client;
   private $serializer;
 
-  public function __construct(Client $gameApiClient) {
+  public function __construct(Client $gameApiClient, Serializer $serializer) {
     $this->client = $gameApiClient;
-    $this->serializer = new GameSerializer();
+    $this->serializer = $serializer;
   }
 
-  public function new($size) {
+  public function new(int $size) : Game {
     $response = $this->client->get('/new', [
       'query' => 'size=' . $size
     ]);
-    return $this->serializer->deserialize($response->getBody());
+    return $this->serializer->deserialize($response->getBody(), Game::class, 'json');
   }
 
-  public function move($grid, $coords) {
-    $gridJson = $this->serializer->serialize($grid);
-    $coordsJson = json_encode($coords);
+  public function move(Game $game, String $move) : Game {
+    $gridJson = json_encode($game->getGrid());
+    $moveJson = json_encode($move);
     $response = $this->client->post('/move', [
       'json' => [
         'grid' => $gridJson,
-        'coords' => $coordsJson
+        'move' => $moveJson
       ]
     ]);
-    return $this->serializer->deserialize($response->getBody());
+
+    $newGame = new Game();
+    $newGame->setInitialGrid($game->getInitialGrid());
+    $newGame->setGrid(json_decode($response->getBody()));
+    return $newGame;
   }
 
-  public function suggest($grid, $initialGrid) {
-    $gridJson = $this->serializer->serialize($grid);
-    $initialGridJson = $this->serializer->serialize($initialGrid);
+  public function suggest(Game $game) : String {
+    $gridJson = json_encode($game->getGrid());
+    $initialGridJson = json_encode($game->getInitialGrid());
     $response = $this->client->get('/suggest', [
       'json' => [
         'grid' => $gridJson,
         'initial_grid' => $initialGridJson
     ]]);
-    return $this->serializer->deserialize($response->getBody());
+    return $response->getBody();
   }
 }
