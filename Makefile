@@ -19,6 +19,7 @@ stop: ## Stop 15-puzzle game
 
 test: ## Run all tests
 	docker build -t php docker/php
+	$(MAKE) composer-install
 	docker run -it --rm -v "${PWD}/app:/app" php bin/phpunit
 
 connect-php: ## Open bash session in php container as host user
