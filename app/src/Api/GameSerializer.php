@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use App\Game\Game;
 
 class GameSerializer {
-  private $_serializer;
+  private $serializer;
 
   public function __construct() {
     $encoders = array(new JsonEncoder());
