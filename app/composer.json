@@ -3,10 +3,12 @@
     "license": "proprietary",
     "require": {
         "php": "^7.1",
-        "guzzlehttp/guzzle": "~6.0",
+        "csa/guzzle-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/console": "^3.3",
         "symfony/framework-bundle": "^3.3",
+        "symfony/property-access": "^3.3",
+        "symfony/serializer": "^3.3",
         "symfony/twig-bundle": "^3.3",
         "symfony/web-profiler-bundle": "^3.3",
         "symfony/yaml": "^3.3"
