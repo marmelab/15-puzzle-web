@@ -2,5 +2,5 @@ csa_guzzle:
   clients:
     puzzle_api:
       config:
-        base_uri: http://15-puzzle-go:2000
+        base_uri: "%env(API_BASE_URI)%"
         timeout: 2.0
