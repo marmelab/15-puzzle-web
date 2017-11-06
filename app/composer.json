@@ -5,6 +5,7 @@
         "php": "^7.1",
         "csa/guzzle-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^5.0",
+        "symfony/asset": "^3.3",
         "symfony/console": "^3.3",
         "symfony/framework-bundle": "^3.3",
         "symfony/property-access": "^3.3",

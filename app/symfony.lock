@@ -274,5 +274,8 @@
     },
     "csa/guzzle-bundle": {
         "version": "v2.2.1"
+    },
+    "symfony/asset": {
+        "version": "v3.3.10"
     }
 }
