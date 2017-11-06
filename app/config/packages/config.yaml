@@ -1,0 +1,6 @@
+csa_guzzle:
+  clients:
+    puzzle_api:
+      config:
+        base_uri: http://15-puzzle-go:2000
+        timeout: 2.0
