@@ -1,3 +1,7 @@
 index:
    path: /
    defaults: { _controller: 'App\Controller\MainController::start' }
+
+game:
+   path: /game
+   defaults: { _controller: 'App\Controller\GameController::start' }
