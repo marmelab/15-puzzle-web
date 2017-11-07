@@ -26,3 +26,8 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    # register custom services
+    game_api:
+        class: App\Api\GameApi
+        arguments: ["@csa_guzzle.client.puzzle_api"]

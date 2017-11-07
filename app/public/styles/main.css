@@ -1,0 +1,15 @@
+.puzzle-row {
+  display: flex;
+}
+
+.puzzle-tile {
+  align-items: center;
+  background-color: #ef5350;
+  color: white;
+  display: flex;
+  font-size: 28px;
+  height: 25%;
+  justify-content: center;
+  margin: 1px;
+  width: 25%;
+}

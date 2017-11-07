@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block header %}   
+  <div class="section">
+    <h5>Current game</h5>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="section">
+    <div>
+      {% for row in grid %}
+        <div class="puzzle-row">
+          {% for value in row %}
+            {% if value == 0 %}
+              <div class="puzzle-tile">&nbsp;</div>
+            {% else %}
+              <div class="puzzle-tile">{{ value }}</div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

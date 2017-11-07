@@ -14,6 +14,15 @@ make
 
 ### Install
 
+Initialize the git submodules
+
+``` bash
+git module init
+git submodule update
+```
+
+Note: don't forget to launch `git submodule update` each time the 15-puzzle-go is updated.
+
 Install the dependencies, compile the code and build the dockers
 
 ``` bash

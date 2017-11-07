@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block pageTitle %}15 Puzzle Web!{% endblock %}</title>
+    {% block stylesheets %}
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+      <link rel="stylesheet" href="{{ asset('styles/main.css') }}"/>
+    {% endblock %}
+  </head>
+  <body>
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a href="/" class="brand-logo">15 Puzzle Web!</a>
+      </div>
+    </nav>
+    <section class="container">
+      {% block header %}{% endblock %}
+    </section>
+    <section class="container">
+      {% block content %}{% endblock %}
+    </section>
+  </body>
+</html>
