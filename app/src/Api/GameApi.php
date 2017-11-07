@@ -22,13 +22,12 @@ class GameApi {
     return $this->serializer->deserialize($response->getBody(), Game::class, 'json');
   }
 
-  public function move(Game $game, String $move) : Game {
+  public function move(Game $game, int $tile) : Game {
     $gridJson = json_encode($game->getGrid());
-    $moveJson = json_encode($move);
     $response = $this->client->post('/move-tile', [
-      'json' => [
-        'grid' => $gridJson,
-        'move' => $moveJson
+      'form_params' => [
+        'Grid' => $gridJson,
+        'TileNumber' => $tile
       ]
     ]);
 
@@ -42,9 +41,9 @@ class GameApi {
     $gridJson = json_encode($game->getGrid());
     $initialGridJson = json_encode($game->getInitialGrid());
     $response = $this->client->get('/suggest', [
-      'json' => [
-        'grid' => $gridJson,
-        'initial_grid' => $initialGridJson
+      'query' => [
+        'Grid' => $gridJson,
+        'InitialGrid' => $initialGridJson
     ]]);
     return $response->getBody();
   }
