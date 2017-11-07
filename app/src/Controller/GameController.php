@@ -8,7 +8,7 @@ use App\Api\GameApi;
 use App\Game\Game;
 
 class GameController extends Controller {
-  private const DEFAULT_SIZE = 4;
+  public const DEFAULT_SIZE = 4;
   private $api;
   private $twig;
 
@@ -16,9 +16,9 @@ class GameController extends Controller {
     $this->api = $gameApi;
     $this->twig = $twig;
   }
- 
+
   public function start() {
-    $game = $this->api->new(4);
+    $game = $this->api->new(self::DEFAULT_SIZE);
     return new Response($this->twig->render('game.html.twig', [
       'grid' => $game->getGrid()
     ]));

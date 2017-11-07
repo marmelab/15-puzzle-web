@@ -25,7 +25,7 @@ class GameApi {
   public function move(Game $game, String $move) : Game {
     $gridJson = json_encode($game->getGrid());
     $moveJson = json_encode($move);
-    $response = $this->client->post('/move', [
+    $response = $this->client->post('/move-tile', [
       'json' => [
         'grid' => $gridJson,
         'move' => $moveJson
