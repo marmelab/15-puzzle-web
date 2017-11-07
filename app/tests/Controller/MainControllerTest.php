@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MainControllerTest extends WebTestCase {
     public function testStart() {
-
       $client = static::createClient();
 
       $crawler = $client->request('GET', '/');
