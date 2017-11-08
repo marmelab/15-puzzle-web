@@ -8,24 +8,6 @@
 
 {% block content %}
   <div class="section">
-    <div>
-      {% for row in grid %}
-        <div class="puzzle-row">
-          {% for value in row %}
-            {% if value == 0 %}
-              <div class="puzzle-tile">&nbsp;</div>
-            {% else %}
-              <div class="puzzle-tile">
-                {% if isVictory %}
-                  {{value}}
-                {% else %}
-                  <a href="/game/{{id}}/move/{{value}}">{{value}}</a>
-                {% endif %}              
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      {% endfor %}
-    </div>
+    {% include 'grid.html.twig' %}
   </div>
 {% endblock %}

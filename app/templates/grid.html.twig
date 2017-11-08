@@ -1,0 +1,19 @@
+<div>
+  {% for row in grid %}
+    <div class="puzzle-row">
+      {% for value in row %}
+        {% if value == 0 %}
+          <div class="puzzle-tile">&nbsp;</div>
+        {% else %}
+          <div class="puzzle-tile z-depth-1">
+            {% if isVictory %}
+              <span class="puzzle-tile-value">{{value}}</span>
+            {% else %} 
+              <a class="puzzle-tile-value" href="/game/{{id}}/move/{{value}}">{{value}}</a>
+            {% endif %}           
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
