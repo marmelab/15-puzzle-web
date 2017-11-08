@@ -2,12 +2,23 @@
 
 {% block header %}   
   <div class="section">
-    <h5>Current game</h5>
+    {% if isVictory %}
+      <h5>Congratulations, you have solved the puzzle !</h5>
+    {% else %}
+      <h5>Try to solve the puzzle by clicking on the tiles you want to move</h5>
+    {% endif %}
   </div>
 {% endblock %}
 
 {% block content %}
   <div class="section">
-    {% include 'grid.html.twig' %}
+    <div class="row">
+      {% include 'grid.html.twig' %}
+    </div>
+    {% if isVictory %}
+      <div class="row">
+        <a class="btn" href="/game"><i class="material-icons left">keyboard_return</i>Play another game</a>
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
