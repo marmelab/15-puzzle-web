@@ -13,7 +13,6 @@
         <env name="APP_ENV" value="test" />
         <env name="APP_DEBUG" value="1" />
         <env name="APP_SECRET" value="s$cretf0rt3st" />
-        <env name="DATABASE_URL" value="pgsql://postgres@@127.0.0.1:5432"/>
     </php>
 
     <testsuites>

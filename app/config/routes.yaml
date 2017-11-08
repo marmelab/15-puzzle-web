@@ -9,11 +9,7 @@ game_new:
 game:
   path: /game/{id}
   defaults: { _controller: 'App\Controller\GameController::play' }
-  options:
-    utf8: true
 
 game_move:
   path: /game/{id}/move/{tile}
   defaults: { _controller: 'App\Controller\GameController::move' }
-  options:
-    utf8: true
