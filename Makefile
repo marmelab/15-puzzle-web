@@ -7,9 +7,14 @@ composer-install: ## Run composer install within the host
 	docker-compose run --no-deps --rm \
 		php bash -ci './bin/composer install'
 
+database-install: ## Create and set the database
+	docker-compose run --no-deps --rm \
+		php bash -ci 'rm -f var/data.db && ./bin/console doctrine:database:create && ./bin/console doctrine:schema:create && chmod 666 var/data.db'
+
 install: ## Build the dockers
 	docker-compose build
 	$(MAKE) composer-install
+	$(MAKE) database-install
 
 run: ## Run the 15-puzzle game
 	docker-compose up -d

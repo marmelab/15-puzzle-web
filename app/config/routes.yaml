@@ -1,7 +1,15 @@
 index:
-   path: /
-   defaults: { _controller: 'App\Controller\MainController::start' }
+  path: /
+  defaults: { _controller: 'App\Controller\MainController::start' }
+
+game_new:
+  path: /game
+  defaults: { _controller: 'App\Controller\GameController::new' }
 
 game:
-   path: /game
-   defaults: { _controller: 'App\Controller\GameController::start' }
+  path: /game/{id}
+  defaults: { _controller: 'App\Controller\GameController::play' }
+
+game_move:
+  path: /game/{id}/move/{tile}
+  defaults: { _controller: 'App\Controller\GameController::move' }

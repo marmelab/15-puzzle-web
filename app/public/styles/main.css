@@ -8,8 +8,12 @@
   color: white;
   display: flex;
   font-size: 28px;
-  height: 25%;
+  height: 150px;
   justify-content: center;
   margin: 1px;
-  width: 25%;
+  width: 150px;
+}
+
+.puzzle-tile a {
+  color: white;  
 }

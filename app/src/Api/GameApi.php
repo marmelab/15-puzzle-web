@@ -5,6 +5,7 @@ namespace App\Api;
 use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
 use App\Game\Game;
+use App\Game\Grid;
 
 class GameApi {
   private $client;
@@ -22,19 +23,19 @@ class GameApi {
     return $this->serializer->deserialize($response->getBody(), Game::class, 'json');
   }
 
-  public function move(Game $game, String $move) : Game {
-    $gridJson = json_encode($game->getGrid());
-    $moveJson = json_encode($move);
+  public function move(Game $game, int $tile) : Game {
     $response = $this->client->post('/move-tile', [
-      'json' => [
-        'grid' => $gridJson,
-        'move' => $moveJson
-      ]
+      'body' => json_encode([
+        'Grid' => $game->getGrid(),
+        'TileNumber' => $tile
+      ])
     ]);
 
+    
+    $newGrid = $this->serializer->deserialize($response->getBody(), Grid::class, 'json');
     $newGame = new Game();
+    $newGame->setGrid($newGrid->getGrid());
     $newGame->setInitialGrid($game->getInitialGrid());
-    $newGame->setGrid(json_decode($response->getBody()));
     return $newGame;
   }
 
@@ -42,9 +43,9 @@ class GameApi {
     $gridJson = json_encode($game->getGrid());
     $initialGridJson = json_encode($game->getInitialGrid());
     $response = $this->client->get('/suggest', [
-      'json' => [
-        'grid' => $gridJson,
-        'initial_grid' => $initialGridJson
+      'query' => [
+        'Grid' => $gridJson,
+        'InitialGrid' => $initialGridJson
     ]]);
     return $response->getBody();
   }
