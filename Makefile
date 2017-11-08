@@ -19,6 +19,9 @@ install: ## Build the dockers
 run: ## Run the 15-puzzle game
 	docker-compose up -d
 
+start: ## Start 15-puzzle game (alias for `run`)
+	$(MAKE) run
+
 stop: ## Stop 15-puzzle game
 	docker-compose down
 
