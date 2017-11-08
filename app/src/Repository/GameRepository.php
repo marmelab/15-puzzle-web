@@ -29,8 +29,8 @@ class GameRepository extends EntityRepository {
 
   public function updateGame(int $id, Game $game) : GameEntity{
     $gameSerialized = $this->serializer->serialize($game, 'json');
-    $gameEntity = $this->em->find('App:GameEntity', $gameIidd);
-    $gameEntity.setGame($gameSerialized);
+    $gameEntity = $this->em->find('App:GameEntity', $id);
+    $gameEntity->setGame($gameSerialized);
     $this->em->persist($gameEntity);
     return $gameEntity;
   }

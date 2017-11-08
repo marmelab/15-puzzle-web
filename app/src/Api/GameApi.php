@@ -5,6 +5,7 @@ namespace App\Api;
 use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
 use App\Game\Game;
+use App\Game\Grid;
 
 class GameApi {
   private $client;
@@ -23,17 +24,18 @@ class GameApi {
   }
 
   public function move(Game $game, int $tile) : Game {
-    $gridJson = json_encode($game->getGrid());
     $response = $this->client->post('/move-tile', [
-      'form_params' => [
-        'Grid' => $gridJson,
+      'body' => json_encode([
+        'Grid' => $game->getGrid(),
         'TileNumber' => $tile
-      ]
+      ])
     ]);
 
+    
+    $newGrid = $this->serializer->deserialize($response->getBody(), Grid::class, 'json');
     $newGame = new Game();
+    $newGame->setGrid($newGrid->getGrid());
     $newGame->setInitialGrid($game->getInitialGrid());
-    $newGame->setGrid(json_decode($response->getBody()));
     return $newGame;
   }
 
