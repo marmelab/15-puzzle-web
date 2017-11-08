@@ -17,7 +17,8 @@
     </div>
     {% if isVictory %}
       <div class="row">
-        <a class="btn" href="{{ path('game_new') }}"><i class="material-icons left">keyboard_return</i>Play another game</a>
+        <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
+        <a class="btn" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
       </div>
     {% endif %}
   </div>
