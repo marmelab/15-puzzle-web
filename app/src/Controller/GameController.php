@@ -21,14 +21,15 @@ class GameController extends Controller {
     $this->gameRepository = $gameRepository;
   }
 
-  private function renderGrid($id, $game) {
+  private function renderGrid(string $id, Game $game) {
     return new Response($this->twig->render('game.html.twig', [
       'id' => $id,
-      'grid' => $game->getGrid()
+      'grid' => $game->getGrid(),
+      'isVictory' => $game->getIsVictory()
     ]));
   }
 
-  public function play($id) {
+  public function play(string $id) {
     $game = $this->gameRepository->findGameById($id);
     return $this->renderGrid($id, $game);
   }
@@ -40,11 +41,13 @@ class GameController extends Controller {
     return $this->redirectToRoute('game', array('id' => $gameEntity->getId()));
   }
 
-  public function move($id, $tile) {
+  public function move(string $id, int  $tile) {
     $game = $this->gameRepository->findGameById($id);
-    $newGame = $this->api->move($game, $tile);
-    $this->gameRepository->updateGame($id, $newGame);
-    $this->gameRepository->flush();
+    if (!$game->getIsVictory()) {
+      $newGame = $this->api->move($game, $tile);
+      $this->gameRepository->updateGame($id, $newGame);
+      $this->gameRepository->flush();
+    }
     return $this->redirectToRoute('game', array('id' => $id));    
   }
 }

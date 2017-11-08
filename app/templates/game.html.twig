@@ -15,7 +15,13 @@
             {% if value == 0 %}
               <div class="puzzle-tile">&nbsp;</div>
             {% else %}
-              <div class="puzzle-tile"><a href="/game/{{id}}/move/{{value}}">{{value}}</a></div>
+              <div class="puzzle-tile">
+                {% if isVictory %}
+                  {{value}}
+                {% else %}
+                  <a href="/game/{{id}}/move/{{value}}">{{value}}</a>
+                {% endif %}              
+              </div>
             {% endif %}
           {% endfor %}
         </div>

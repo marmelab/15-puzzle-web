@@ -25,7 +25,7 @@ class GameRepository extends EntityRepository {
   }
 
   public function createGame(Game $game) : GameEntity {
-    $gameSerialized = $this->serializer->serialize($game, 'json'); 
+    $gameSerialized = $this->serializer->serialize($game, 'json');
     $gameEntity = new GameEntity($gameSerialized);
     $this->em->persist($gameEntity);
     return $gameEntity;
@@ -41,6 +41,6 @@ class GameRepository extends EntityRepository {
 
   public function findGameById(string $id) : Game {
     $gameEntity = $this->findGameEntityById($id);
-    return $this->serializer->deserialize($gameEntity->getGame(), Game::class, 'json');    
+    return $this->serializer->deserialize($gameEntity->getGame(), Game::class, 'json');
   }
 }
