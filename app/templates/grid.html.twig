@@ -9,7 +9,7 @@
             {% if isVictory %}
               <span class="puzzle-tile-value">{{value}}</span>
             {% else %} 
-              <a class="puzzle-tile-value" href="/game/{{id}}/move/{{value}}">{{value}}</a>
+              <a class="puzzle-tile-value" href="{{ path('game_move', {'id': id, 'tile': value}) }}">{{value}}</a>
             {% endif %}           
           </div>
         {% endif %}
