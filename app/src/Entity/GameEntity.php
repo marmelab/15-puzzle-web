@@ -10,19 +10,37 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GameEntity {
   /**
-   * @ORM\Column(type="guid", length=6)
+   * @ORM\Column(type="guid")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="UUID")
    */
   private $id;
 
   /**
-   * @ORM\Column(type="string")
+   * @ORM\Column(type="json_array")
    */
-  private $game;
+  private $resolvedGrid;
 
-  public function __construct($game) {
-    $this->game = $game;
+  /**
+   * @ORM\Column(type="json_array")
+   */
+  private $currentGrid;
+  
+  /**
+   * @ORM\Column(type="integer")
+   */
+  private $turn;
+  
+  /**
+   * @ORM\Column(type="boolean")
+   */
+  private $isVictory;
+  
+  public function __construct($resolvedGrid, $currentGrid, $isVictory=false) {
+    $this->resolvedGrid =$resolvedGrid;
+    $this->currentGrid = $currentGrid;
+    $this->turn = 0;
+    $this->isVictory = $isVictory;
   }
 
   // Getters
@@ -31,8 +49,20 @@ class GameEntity {
     return $this->id;
   }
 
-  public function getGame() : string {
-    return $this->game;
+  public function getResolvedGrid() : Array {
+    return $this->resolvedGrid;
+  }
+
+  public function getCurrentGrid() : Array {
+    return $this->currentGrid;
+  }
+
+  public function getTurn() : int {
+    return $this->turn;
+  }
+
+  public function getIsVictory() : bool {
+    return $this->isVictory;
   }
 
   // Setters
@@ -41,7 +71,25 @@ class GameEntity {
     $this->id = $id;
   }
   
-  public function setGame(string $game) {
-    $this->game = $game;
+  public function setResolvedGrid(Array $grid) {
+    $this->resolvedGrid = $grid;
+  }
+
+  public function setCurrentGrid(Array $grid) {
+    $this->currentGrid = $grid;
+  }
+
+  private function setTurn(int $turn) {
+    $this->turn = $turn;
+  }
+
+  public function setIsVictory(bool $isVictory) {
+    $this->isVictory = $isVictory;
+  }
+
+  // Methods
+
+  public function addTurn() {
+    $this->turn++;
   }
 }
