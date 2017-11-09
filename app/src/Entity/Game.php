@@ -9,12 +9,19 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table
  */
 class Game {
+  private const TOKEN_LENGTH = 10;
+
   /**
    * @ORM\Column(type="guid")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="UUID")
    */
   private $id;
+
+  /**
+   * @ORM\Column(type="string")
+   */
+  private $token;
 
   /**
    * @ORM\Column(type="json_array")
@@ -35,8 +42,9 @@ class Game {
    * @ORM\Column(type="boolean")
    */
   private $isVictory;
-  
+
   public function __construct($resolvedGrid, $currentGrid, $isVictory=false) {
+    $this->token = bin2hex(random_bytes(self::TOKEN_LENGTH));
     $this->resolvedGrid =$resolvedGrid;
     $this->currentGrid = $currentGrid;
     $this->turn = 0;
@@ -47,6 +55,10 @@ class Game {
 
   public function getId() : string {
     return $this->id;
+  }
+
+  public function getToken() : string {
+    return $this->token;
   }
 
   public function getResolvedGrid() : Array {
@@ -70,7 +82,11 @@ class Game {
   public function setId(string $id) {
     $this->id = $id;
   }
-  
+
+  private function setToken(string $token) {
+    $this->token = $token;
+  }
+
   public function setResolvedGrid(Array $grid) {
     $this->resolvedGrid = $grid;
   }
