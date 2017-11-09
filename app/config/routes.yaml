@@ -10,6 +10,10 @@ game:
   path: /game/{id}
   defaults: { _controller: 'App\Controller\GameController::play' }
 
+game_cancel:
+  path: /game/{id}/cancel
+  defaults: { _controller: 'App\Controller\GameController::cancel' }
+
 game_move:
   path: /game/{id}/move/{tile}
   defaults: { _controller: 'App\Controller\GameController::move' }

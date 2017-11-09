@@ -41,6 +41,11 @@ class GameController extends Controller {
     return $this->redirectToRoute('game', array('id' => $game->getId()));
   }
 
+  public function cancel($id) {
+    $this->gameRepository->remove($id);
+    return $this->redirectToRoute('index');
+  }
+
   public function move(string $id, int  $tile) {
     $game = $this->gameRepository->findGameById($id);
     if (!$game->getIsVictory()) {
