@@ -5,7 +5,8 @@ namespace App\Api;
 use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
 use App\Game\Game;
-use App\Game\Grid;
+use App\Api\GameResponse;
+use App\Api\MoveResponse;
 
 class GameApi {
   private $client;
@@ -20,33 +21,31 @@ class GameApi {
     $response = $this->client->get('/new', [
       'query' => 'size=' . $size
     ]);
-    return $this->serializer->deserialize($response->getBody(), Game::class, 'json');
+    $gameResponse = $this->serializer->deserialize($response->getBody(), GameResponse::class, 'json');
+    return new Game($gameResponse->getInitialGrid(), $gameResponse->getGrid());
   }
 
   public function move(Game $game, int $tile) : Game {
     $response = $this->client->post('/move-tile', [
       'body' => json_encode([
+        'InitialGrid' => $game->getInitialGrid(),
         'Grid' => $game->getGrid(),
         'TileNumber' => $tile
       ])
     ]);
-
-    
-    $newGrid = $this->serializer->deserialize($response->getBody(), Grid::class, 'json');
-    $newGame = new Game();
-    $newGame->setGrid($newGrid->getGrid());
-    $newGame->setInitialGrid($game->getInitialGrid());
-    return $newGame;
+    $moveResponse = $this->serializer->deserialize($response->getBody(), MoveResponse::class, 'json');
+    $game->setGrid($moveResponse->getGrid());
+    $game->setIsVictory($moveResponse->getIsVictory());
+    return $game;
   }
 
-  public function suggest(Game $game) : String {
-    $gridJson = json_encode($game->getGrid());
-    $initialGridJson = json_encode($game->getInitialGrid());
+  public function suggest(Game $game) : int {
     $response = $this->client->get('/suggest', [
       'query' => [
-        'Grid' => $gridJson,
-        'InitialGrid' => $initialGridJson
+        'Grid' => $json_encode($game->getGrid()),
+        'InitialGrid' => json_encode($game->getInitialGrid())
     ]]);
-    return $response->getBody();
+    $suggestResponse = $this->serializer->deserialize($response->getBody(), SuggestResponse::class, 'json');
+    return $suggestResponse->getTile();
   }
 }

@@ -16,18 +16,22 @@ class GameRepository extends EntityRepository {
     $this->serializer = $serializer;
   }
 
+  private function findGameEntityById(string $id) : GameEntity {
+    return $this->em->find('App:GameEntity', $id);
+  }
+
   public function flush() {
     $this->em->flush();
   }
 
   public function createGame(Game $game) : GameEntity {
-    $gameSerialized = $this->serializer->serialize($game, 'json'); 
+    $gameSerialized = $this->serializer->serialize($game, 'json');
     $gameEntity = new GameEntity($gameSerialized);
     $this->em->persist($gameEntity);
     return $gameEntity;
   }
 
-  public function updateGame(int $id, Game $game) : GameEntity{
+  public function updateGame(string $id, Game $game) : GameEntity {
     $gameSerialized = $this->serializer->serialize($game, 'json');
     $gameEntity = $this->em->find('App:GameEntity', $id);
     $gameEntity->setGame($gameSerialized);
@@ -35,13 +39,8 @@ class GameRepository extends EntityRepository {
     return $gameEntity;
   }
 
-  public function findGameEntityById(int $id) : GameEntity {
-    $gameEntity = $this->em->find('App:GameEntity', $id);
-    return $gameEntity;    
-  }
-
-  public function findGameById(int $id) : Game {
+  public function findGameById(string $id) : Game {
     $gameEntity = $this->findGameEntityById($id);
-    return $this->serializer->deserialize($gameEntity->getGame(), Game::class, 'json');    
+    return $this->serializer->deserialize($gameEntity->getGame(), Game::class, 'json');
   }
 }

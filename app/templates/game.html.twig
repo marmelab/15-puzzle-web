@@ -2,24 +2,24 @@
 
 {% block header %}   
   <div class="section">
-    <h5>Current game</h5>
+    {% if isVictory %}
+      <h5>Congratulations, you have solved the puzzle !</h5>
+    {% else %}
+      <h5>Try to solve the puzzle by clicking on the tiles you want to move</h5>
+    {% endif %}
   </div>
 {% endblock %}
 
 {% block content %}
   <div class="section">
-    <div>
-      {% for row in grid %}
-        <div class="puzzle-row">
-          {% for value in row %}
-            {% if value == 0 %}
-              <div class="puzzle-tile">&nbsp;</div>
-            {% else %}
-              <div class="puzzle-tile"><a href="/game/{{id}}/move/{{value}}">{{value}}</a></div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      {% endfor %}
+    <div class="row">
+      {% include 'grid.html.twig' %}
     </div>
+    {% if isVictory %}
+      <div class="row">
+        <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
+        <a class="btn" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
