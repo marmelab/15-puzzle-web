@@ -4,9 +4,11 @@ namespace App\Api;
 
 use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use App\Entity\Game;
 use App\Api\GameResponse;
 use App\Api\MoveResponse;
+use App\Api\SuggestResponse;
 
 class GameApi {
   private $client;
@@ -26,13 +28,18 @@ class GameApi {
   }
 
   public function move(Game $game, int $tile) : Game {
-    $response = $this->client->post('/move-tile', [
-      'body' => json_encode([
-        'InitialGrid' => $game->getResolvedGrid(),
-        'Grid' => $game->getCurrentGrid(),
-        'TileNumber' => $tile
-      ])
-    ]);
+    try {
+      $response = $this->client->post('/move-tile', [
+        'body' => json_encode([
+          'InitialGrid' => $game->getResolvedGrid(),
+          'Grid' => $game->getCurrentGrid(),
+          'TileNumber' => $tile
+        ])
+      ]);
+    } catch (ConnectException $e) {
+      return $game;
+    }
+
     $moveResponse = $this->serializer->deserialize($response->getBody(), MoveResponse::class, 'json');
     $game->setCurrentGrid($moveResponse->getGrid());
     $game->addTurn();
