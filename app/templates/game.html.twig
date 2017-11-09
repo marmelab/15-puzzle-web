@@ -3,9 +3,9 @@
 {% block header %}   
   <div class="section">
     {% if isVictory %}
-      <h5>Congratulations, you have solved the puzzle !</h5>
+      <h5>Congratulations, you have solved the puzzle in {{ turn }} turns!</h5>
     {% else %}
-      <h5>Try to solve the puzzle by clicking on the tiles you want to move</h5>
+      <h5>Turn {{ turn }}: try to solve the puzzle by clicking on the tiles you want to move</h5>
     {% endif %}
   </div>
 {% endblock %}

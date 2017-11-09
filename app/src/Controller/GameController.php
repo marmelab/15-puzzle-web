@@ -7,8 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Api\GameApi;
+use App\Entity\Game;
 use App\Repository\GameRepository;
-use App\Game\Game;
 
 class GameController extends Controller {
   public const DEFAULT_SIZE = 4;
@@ -24,7 +24,8 @@ class GameController extends Controller {
   private function renderGrid(string $id, Game $game) {
     return new Response($this->twig->render('game.html.twig', [
       'id' => $id,
-      'grid' => $game->getGrid(),
+      'grid' => $game->getCurrentGrid(),
+      'turn' => $game->getTurn(),
       'isVictory' => $game->getIsVictory()
     ]));
   }
@@ -36,17 +37,15 @@ class GameController extends Controller {
 
   public function new() {
     $game = $this->api->new(self::DEFAULT_SIZE);
-    $gameEntity = $this->gameRepository->createGame($game);
-    $this->gameRepository->flush();
-    return $this->redirectToRoute('game', array('id' => $gameEntity->getId()));
+    $this->gameRepository->save($game);
+    return $this->redirectToRoute('game', array('id' => $game->getId()));
   }
 
   public function move(string $id, int  $tile) {
     $game = $this->gameRepository->findGameById($id);
     if (!$game->getIsVictory()) {
       $newGame = $this->api->move($game, $tile);
-      $this->gameRepository->updateGame($id, $newGame);
-      $this->gameRepository->flush();
+      $this->gameRepository->save($newGame);
     }
     return $this->redirectToRoute('game', array('id' => $id));    
   }
