@@ -4,7 +4,7 @@ namespace App\Api;
 
 use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
-use App\Entity\GameEntity;
+use App\Entity\Game;
 use App\Api\GameResponse;
 use App\Api\MoveResponse;
 
@@ -17,15 +17,15 @@ class GameApi {
     $this->serializer = $serializer;
   }
 
-  public function new(int $size) : GameEntity {
+  public function new(int $size) : Game {
     $response = $this->client->get('/new', [
       'query' => 'size=' . $size
     ]);
     $gameResponse = $this->serializer->deserialize($response->getBody(), GameResponse::class, 'json');
-    return new GameEntity($gameResponse->getInitialGrid(), $gameResponse->getGrid());
+    return new Game($gameResponse->getInitialGrid(), $gameResponse->getGrid());
   }
 
-  public function move(GameEntity $game, int $tile) : GameEntity {
+  public function move(Game $game, int $tile) : Game {
     $response = $this->client->post('/move-tile', [
       'body' => json_encode([
         'InitialGrid' => $game->getResolvedGrid(),
@@ -34,13 +34,13 @@ class GameApi {
       ])
     ]);
     $moveResponse = $this->serializer->deserialize($response->getBody(), MoveResponse::class, 'json');
-    $game->setGrid($moveResponse->getCurrentGrid());
+    $game->setCurrentGrid($moveResponse->getGrid());
     $game->addTurn();
     $game->setIsVictory($moveResponse->getIsVictory());
     return $game;
   }
 
-  public function suggest(GameEntity $game) : int {
+  public function suggest(Game $game) : int {
     $response = $this->client->get('/suggest', [
       'query' => [
         'Grid' => $json_encode($game->getCurrentGrid()),

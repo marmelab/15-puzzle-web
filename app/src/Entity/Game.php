@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\GameRepository")
  * @ORM\Table
  */
-class GameEntity {
+class Game {
   /**
    * @ORM\Column(type="guid")
    * @ORM\Id

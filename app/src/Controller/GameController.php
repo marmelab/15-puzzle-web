@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Api\GameApi;
-use App\Entity\GameEntity;
+use App\Entity\Game;
 use App\Repository\GameRepository;
 
 class GameController extends Controller {
@@ -21,7 +21,7 @@ class GameController extends Controller {
     $this->gameRepository = $gameRepository;
   }
 
-  private function renderGrid(string $id, GameEntity $game) {
+  private function renderGrid(string $id, Game $game) {
     return new Response($this->twig->render('game.html.twig', [
       'id' => $id,
       'grid' => $game->getCurrentGrid(),
@@ -31,7 +31,7 @@ class GameController extends Controller {
   }
 
   public function play(string $id) {
-    $game = $this->gameRepository->findGameEntityById($id);
+    $game = $this->gameRepository->findGameById($id);
     return $this->renderGrid($id, $game);
   }
 
@@ -42,7 +42,7 @@ class GameController extends Controller {
   }
 
   public function move(string $id, int  $tile) {
-    $game = $this->gameRepository->findGameEntityById($id);
+    $game = $this->gameRepository->findGameById($id);
     if (!$game->getIsVictory()) {
       $newGame = $this->api->move($game, $tile);
       $this->gameRepository->save($newGame);

@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManager;
-use App\Entity\GameEntity;
+use App\Entity\Game;
 
 class GameRepository extends EntityRepository {
   private $em;
@@ -13,11 +13,11 @@ class GameRepository extends EntityRepository {
     $this->em = $em;
   }
 
-  public function findGameEntityById(string $id) : GameEntity {
-    return $this->em->find('App:GameEntity', $id);
+  public function findGameById(string $id) : Game {
+    return $this->em->find('App:Game', $id);
   }
   
-  public function save(GameEntity $game) {
+  public function save(Game $game) {
     $this->em->persist($game);
     $this->em->flush();
   }

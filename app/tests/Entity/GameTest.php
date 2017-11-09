@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\App\Game;
+namespace Tests\App\Entity;
 
 use PHPUnit\Framework\TestCase;
-use App\Game\Game;
+use App\Entity\Game;
 
 class GameTest extends TestCase {
   public function testAddTurn() {
