@@ -15,11 +15,13 @@
     <div class="row">
       {% include 'grid.html.twig' %}
     </div>
-    {% if isVictory %}
-      <div class="row">
+    <div class="row">
+      {% if isVictory %}
         <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
-        <a class="btn" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
-      </div>
-    {% endif %}
+        <a class="btn blue" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
+      {% else %}
+        <a class="btn red" href="{{ path('game_cancel', {'id': id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
+      {% endif %}
+    </div>
   </div>
 {% endblock %}
