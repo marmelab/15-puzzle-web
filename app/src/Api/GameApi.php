@@ -50,7 +50,7 @@ class GameApi {
   public function suggest(Game $game) : int {
     $response = $this->client->get('/suggest', [
       'query' => [
-        'Grid' => $json_encode($game->getCurrentGrid()),
+        'Grid' => json_encode($game->getCurrentGrid()),
         'InitialGrid' => json_encode($game->getResolvedGrid())
     ]]);
     $suggestResponse = $this->serializer->deserialize($response->getBody(), SuggestResponse::class, 'json');

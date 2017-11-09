@@ -7,22 +7,22 @@ class GameResponse {
   private $grid;
 
   // Getters
+  
+  public function getInitialGrid() : Array {
+    return $this->initialGrid;
+  }
 
   public function getGrid() : Array {
     return $this->grid;
   }
 
-  public function getInitialGrid() : Array {
-    return $this->initialGrid;
-  }
-
   // Setters
+  
+  public function setInitialGrid(Array $initialGrid) {
+    $this->initialGrid = $initialGrid;
+  }
 
   public function setGrid(Array $grid) {
     $this->grid = $grid;
-  }
-
-  public function setInitialGrid(Array $grid) {
-    $this->initialGrid = $grid;
   }
 }
