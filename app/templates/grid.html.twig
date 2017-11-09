@@ -6,7 +6,7 @@
           <div class="puzzle-tile">&nbsp;</div>
         {% else %}
           <div class="puzzle-tile z-depth-1">
-            {% if isVictory %}
+            {% if readOnly %}
               <span class="puzzle-tile-value">{{value}}</span>
             {% else %} 
               <a class="puzzle-tile-value" href="{{ path('game_move', {'id': id, 'tile': value}) }}">{{value}}</a>
