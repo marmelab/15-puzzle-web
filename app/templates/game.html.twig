@@ -1,5 +1,11 @@
 {% extends "base.html.twig" %}
 
+{% block refresh %}
+  {% if isOwner and not game.isVictory %}
+    <meta http-equiv="refresh" content="1">
+  {% endif %}
+{% endblock %}
+
 {% block header %}
   <div class="section">
     {% if game.isVictory %}
