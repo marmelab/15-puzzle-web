@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block refresh %}
-  {% if isOwner and not game.isVictory %}
+  {% if not isOwner and not game.isVictory %}
     <meta http-equiv="refresh" content="1">
   {% endif %}
 {% endblock %}
@@ -30,7 +30,7 @@
       {% if game.isVictory %}
         <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
         <a class="btn blue" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
-      {% else %}
+      {% elseif isOwner %}
         <a class="btn red" href="{{ path('game_cancel', {'id': game.id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
       {% endif %}
     </div>
