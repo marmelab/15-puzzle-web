@@ -27,6 +27,11 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    # argument resolver
+    App\ArgumentResolver\GameContextResolver:
+        tags:
+            - { name: controller.argument_value_resolver, priority: 50 }
+
     # register custom services
     game_api:
         class: App\Api\GameApi

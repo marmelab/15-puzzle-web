@@ -2,10 +2,10 @@
 
 {% block header %}   
   <div class="section">
-    {% if isVictory %}
-      <h5>Congratulations, you have solved the puzzle in {{ turn }} turns!</h5>
+    {% if game.isVictory %}
+      <h5>Congratulations, you have solved the puzzle in {{ game.turn }} turns!</h5>
     {% else %}
-      <h5>Turn {{ turn }}</h5>
+      <h5>Turn {{ game.turn }}</h5>
       {% if hasAccess %}
         <p>Try to solve the puzzle by clicking on the tiles you want to move</p>    
       {% else %}
@@ -18,14 +18,14 @@
 {% block content %}
   <div class="section">
     <div class="row">
-      {% include 'grid.html.twig' with {'readOnly': isVictory or not hasAccess} %}
+      {% include 'grid.html.twig' with {'game': game, 'readOnly': game.isVictory or not hasAccess} %}
     </div>
     <div class="row">
-      {% if isVictory %}
+      {% if game.isVictory %}
         <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
         <a class="btn blue" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
       {% else %}
-        <a class="btn red" href="{{ path('game_cancel', {'id': id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
+        <a class="btn red" href="{{ path('game_cancel', {'id': game.id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
       {% endif %}
     </div>
   </div>
