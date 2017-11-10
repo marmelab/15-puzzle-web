@@ -9,11 +9,10 @@ use App\ArgumentResolver\GameContext;
 use App\Authentication\CookieAuthManager;
 use App\Repository\GameRepository;
 
-
 class GameContextResolver implements ArgumentValueResolverInterface {
   private $gameRepository;
 
-  public function __construct(GameRepository $gameRepository){
+  public function __construct(GameRepository $gameRepository) {
     $this->gameRepository = $gameRepository;    
   }
 
