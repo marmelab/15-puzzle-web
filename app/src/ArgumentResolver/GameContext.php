@@ -7,7 +7,7 @@ use App\Entity\Game;
 class GameContext {
 
   private $game;
-  private $hasAccess;
+  private $isOwner;
 
   public function __construct() {}
 
@@ -17,8 +17,8 @@ class GameContext {
     $this->game = $game;
   }
 
-  public function setHasAccess(bool $hasAccess) {    
-    $this->hasAccess = $hasAccess;
+  public function setIsOwner(bool $isOwner) {    
+    $this->isOwner = $isOwner;
   }
 
   // Getters
@@ -27,7 +27,7 @@ class GameContext {
     return $this->game;
   }
 
-  public function getHasAccess() : bool {
-    return $this->hasAccess;
+  public function getIsOwner() : bool {
+    return $this->isOwner;
   }
 }

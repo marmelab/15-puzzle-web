@@ -10,15 +10,15 @@ use App\Entity\Game;
 class CookieAuthManager {
   public const COOKIE_NAME = 'current-puzzle';
   
-  public static function hasAccess($request, $game) {
+  public static function isOwner($request, $game) {
     return $request->cookies->get(self::COOKIE_NAME) == $game->getToken();
   }
 
-  public static function setAccess($response, $game) {
+  public static function setOwner($response, $game) {
     $response->headers->setCookie(new Cookie(self::COOKIE_NAME, $game->getToken()));
   }
 
-  public static function removeAccess($response) {
+  public static function removeOwner($response) {
     $response->headers->clearCookie(self::COOKIE_NAME);
   }
 }

@@ -1,12 +1,12 @@
 {% extends "base.html.twig" %}
 
-{% block header %}   
+{% block header %}
   <div class="section">
     {% if game.isVictory %}
       <h5>Congratulations, you have solved the puzzle in {{ game.turn }} turns!</h5>
     {% else %}
       <h5>Turn {{ game.turn }}</h5>
-      {% if hasAccess %}
+      {% if isOwner %}
         <p>Try to solve the puzzle by clicking on the tiles you want to move</p>    
       {% else %}
         <p>You can only watch this puzzle. Create a <a href="{{ path('game_new')}}">new game</a> to play.</p>
@@ -18,7 +18,7 @@
 {% block content %}
   <div class="section">
     <div class="row">
-      {% include 'grid.html.twig' with {'game': game, 'readOnly': game.isVictory or not hasAccess} %}
+      {% include 'grid.html.twig' with {'game': game, 'readOnly': game.isVictory or not isOwner} %}
     </div>
     <div class="row">
       {% if game.isVictory %}

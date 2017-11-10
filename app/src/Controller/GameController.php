@@ -27,7 +27,7 @@ class GameController extends Controller {
   public function play(GameContext $context) {
     return new Response($this->twig->render('game.html.twig', [
       'game' => $context->getGame(),
-      'hasAccess' => $context->getHasAccess()
+      'isOwner' => $context->getIsOwner()
     ]));
   }
 
@@ -38,7 +38,7 @@ class GameController extends Controller {
     $response = $this->redirectToRoute('game', [
       'id' => $game->getId()
     ]);
-    CookieAuthManager::setAccess($response, $game);
+    CookieAuthManager::setOwner($response, $game);
 
     return $response;    
   }
@@ -46,9 +46,9 @@ class GameController extends Controller {
   public function cancel(GameContext $context) {
     $response = $this->redirectToRoute('index');
     
-    if ($context->getHasAccess()) {
+    if ($context->getIsOwner()) {
       $this->gameRepository->remove($context->getGame()->getId());
-      CookieAuthManager::removeAccess($response);
+      CookieAuthManager::removeOwner($response);
     }
 
     return $response;
@@ -57,7 +57,7 @@ class GameController extends Controller {
   public function move(GameContext $context, int $tile) {
     $game = $context->getGame();
 
-    if ($context->getHasAccess() && !$game->getIsVictory()) {
+    if ($context->getIsOwner() && !$game->getIsVictory()) {
       $newGame = $this->api->move($game, $tile);
       $this->gameRepository->save($newGame);
     }

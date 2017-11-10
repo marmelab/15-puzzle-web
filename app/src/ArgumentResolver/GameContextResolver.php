@@ -23,11 +23,11 @@ class GameContextResolver implements ArgumentValueResolverInterface {
 
   public function resolve(Request $request, ArgumentMetadata $argument) {
     $game = $this->gameRepository->findGameById($request->get('id'));
-    $hasAccess = CookieAuthManager::hasAccess($request, $game);
+    $isOwner = CookieAuthManager::isOwner($request, $game);
 
     $gameContext = new GameContext();
     $gameContext->setGame($game);
-    $gameContext->setHasAccess($hasAccess);
+    $gameContext->setIsOwner($isOwner);
     yield $gameContext;
   }
 }
