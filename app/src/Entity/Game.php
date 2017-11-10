@@ -9,8 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table
  */
 class Game {
-  private const TOKEN_LENGTH = 10;
-
   /**
    * @ORM\Column(type="guid")
    * @ORM\Id
@@ -43,8 +41,8 @@ class Game {
    */
   private $isVictory;
 
-  public function __construct($resolvedGrid, $currentGrid, $isVictory=false) {
-    $this->token = bin2hex(random_bytes(self::TOKEN_LENGTH));
+  public function __construct($token, $resolvedGrid, $currentGrid, $isVictory=false) {
+    $this->token = $token;
     $this->resolvedGrid =$resolvedGrid;
     $this->currentGrid = $currentGrid;
     $this->turn = 0;

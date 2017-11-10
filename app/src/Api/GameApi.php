@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use App\Entity\Game;
+use App\Api\Token;
 use App\Api\GameResponse;
 use App\Api\MoveResponse;
 use App\Api\SuggestResponse;
@@ -24,7 +25,7 @@ class GameApi {
       'query' => 'size=' . $size
     ]);
     $gameResponse = $this->serializer->deserialize($response->getBody(), GameResponse::class, 'json');
-    return new Game($gameResponse->getInitialGrid(), $gameResponse->getGrid());
+    return new Game(Token::generate(), $gameResponse->getInitialGrid(), $gameResponse->getGrid());
   }
 
   public function move(Game $game, int $tile) : Game {

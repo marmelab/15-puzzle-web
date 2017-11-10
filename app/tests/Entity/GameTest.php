@@ -8,6 +8,7 @@ use App\Entity\Game;
 class GameTest extends TestCase {
   public function testAddTurn() {
     $game = new Game(
+      'randomtoken',
       array(
         array(1, 2, 3),
         array(4, 5, 6),
