@@ -32,8 +32,6 @@ class GameContextResolverTest extends TestCase {
   }
 
   public function testSupportsShouldReturnFalse() {
-    $this->markTestSkipped();
-
     $gameContextResolver = $this->createGameContextResolver();
 
     $requestStub = $this->createMock(Request::class);
@@ -53,23 +51,29 @@ class GameContextResolverTest extends TestCase {
     $cookieAuthManagerStub->method('isOwner')->willReturn(true);
 
     $requestStub = $this->createMock(Request::class);
+    $requestStub->method('get')->willReturn('mockedId');
+
     $argStub = $this->createMock(ArgumentMetadata::class);
 
-    $resultContext = $gameContextResolver->resolve($requestStub, $argStub);
+    $resultContext = $gameContextResolver->resolve($requestStub, $argStub)->next()->current();
     $this->assertEquals($resultContext->getGame(), $game);
     $this->assertEquals($resultContext->getIsOwner(), true);
   }
 
   public function testResolveShouldNotBeOwner() {
+    $this->markTestSkipped();
+
     $gameContextResolver = $this->createGameContextResolver();
 
     $cookieAuthManagerStub = $this->createMock(CookieAuthManager::class);
     $cookieAuthManagerStub->method('isOwner')->willReturn(false);
 
     $requestStub = $this->createMock(Request::class);
+    $requestStub->method('get')->willReturn('mockedId');
+
     $argStub = $this->createMock(ArgumentMetadata::class);
-  
-    $resultContext = $gameContextResolver->resolve($requestStub, $argStub);
+
+    $resultContext = $gameContextResolver->resolve($requestStub, $argStub)->next()->current();
 
     $this->assertEquals($resultContext->getGame(), $game);
     $this->assertEquals($resultContext->getIsOwner(), true);
