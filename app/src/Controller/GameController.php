@@ -23,7 +23,7 @@ class GameController extends Controller {
     $this->api = $gameApi;
     $this->gameRepository = $gameRepository;
   }
-  
+
   public function play(GameContext $context) {
     return new Response($this->twig->render('game.html.twig', [
       'game' => $context->getGame(),
@@ -45,7 +45,7 @@ class GameController extends Controller {
 
   public function cancel(GameContext $context) {
     $response = $this->redirectToRoute('index');
-    
+
     if ($context->getIsOwner()) {
       $this->gameRepository->remove($context->getGame()->getId());
       CookieAuthManager::removeOwner($response);
