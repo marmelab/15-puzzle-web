@@ -9,11 +9,15 @@
 {% block header %}
   <div class="section">
     {% if game.isVictory %}
-      <h5>Congratulations, you have solved the puzzle in {{ game.turn }} turns!</h5>
+      {% if isOwner %}
+        <h5>Congratulations, you have solved the puzzle in {{ game.turn }} turns!</h5>
+      {% else %}
+        <h5>The puzzle has been solved in {{ game.turn }} turns!</h5>
+      {% endif %}
     {% else %}
       <h5>Turn {{ game.turn }}</h5>
       {% if isOwner %}
-        <p>Try to solve the puzzle by clicking on the tiles you want to move</p>    
+        <p>Try to solve the puzzle by clicking on the tiles you want to move</p>
       {% else %}
         <p>You can only watch this puzzle. Create a <a href="{{ path('game_new')}}">new game</a> to play.</p>
       {% endif %}
