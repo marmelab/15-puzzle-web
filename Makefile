@@ -5,11 +5,11 @@ help: ## Print all commands (default)
 
 composer-install: ## Run composer install within the host
 	docker-compose run --no-deps --rm \
-		php bash -ci './bin/composer install'
+		service_php bash -ci './bin/composer install'
 
 database-install: ## Create and set the database
 	docker-compose run --no-deps --rm \
-		php bash -ci 'rm -f var/data.db && ./bin/console doctrine:database:create && ./bin/console doctrine:schema:create && chmod 666 var/data.db'
+		service_php bash -ci 'rm -f var/data.db && ./bin/console doctrine:database:create && ./bin/console doctrine:schema:create && chmod 666 var/data.db'
 
 install: ## Build the dockers
 	docker-compose build
@@ -26,12 +26,12 @@ stop: ## Stop 15-puzzle game
 	docker-compose down
 
 test: ## Run all tests
-	docker build -t php docker/php
+	docker build -t service_php docker/php
 	$(MAKE) composer-install
-	docker run -it --rm -v "${PWD}/app:/app" php bin/phpunit
+	docker run -it --rm -v "${PWD}/app:/app" service_php bin/phpunit
 
 connect-php: ## Open bash session in php container as host user
-	docker-compose run --no-deps --rm php bash
+	docker-compose run --no-deps --rm service_php bash
 
 logs: ## Display the logs of all containers
 	docker-compose logs
