@@ -2,10 +2,10 @@
 
 namespace App\Api;
 
-class Token {
+class TokenGenerator {
   public const TOKEN_LENGTH = 10;
 
-  public static function generate(int $tokenLength = self::TOKEN_LENGTH) : string {
+  public function generate(int $tokenLength = self::TOKEN_LENGTH) : string {
     if ($tokenLength <= 0) {
       $tokenLength = self::TOKEN_LENGTH;
     }
