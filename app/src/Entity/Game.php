@@ -17,6 +17,11 @@ class Game {
   private $id;
 
   /**
+   * @ORM\Column(type="string")
+   */
+  private $token;
+
+  /**
    * @ORM\Column(type="json_array")
    */
   private $resolvedGrid;
@@ -35,8 +40,9 @@ class Game {
    * @ORM\Column(type="boolean")
    */
   private $isVictory;
-  
-  public function __construct($resolvedGrid, $currentGrid, $isVictory=false) {
+
+  public function __construct($token, $resolvedGrid, $currentGrid, $isVictory=false) {
+    $this->token = $token;
     $this->resolvedGrid =$resolvedGrid;
     $this->currentGrid = $currentGrid;
     $this->turn = 0;
@@ -47,6 +53,10 @@ class Game {
 
   public function getId() : string {
     return $this->id;
+  }
+
+  public function getToken() : string {
+    return $this->token;
   }
 
   public function getResolvedGrid() : Array {
@@ -70,7 +80,11 @@ class Game {
   public function setId(string $id) {
     $this->id = $id;
   }
-  
+
+  private function setToken(string $token) {
+    $this->token = $token;
+  }
+
   public function setResolvedGrid(Array $grid) {
     $this->resolvedGrid = $grid;
   }

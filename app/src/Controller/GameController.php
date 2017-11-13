@@ -7,51 +7,61 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Api\GameApi;
+use App\Authentication\CookieAuthManager;
 use App\Entity\Game;
 use App\Repository\GameRepository;
+use App\ArgumentResolver\GameContext;
 
 class GameController extends Controller {
   public const DEFAULT_SIZE = 4;
+
   private $api;
   private $twig;
 
   public function __construct(\Twig_Environment $twig, GameApi $gameApi, GameRepository $gameRepository) {
-    $this->api = $gameApi;
     $this->twig = $twig;
+    $this->api = $gameApi;
     $this->gameRepository = $gameRepository;
   }
 
-  private function renderGrid(string $id, Game $game) {
+  public function play(GameContext $context) {
     return new Response($this->twig->render('game.html.twig', [
-      'id' => $id,
-      'grid' => $game->getCurrentGrid(),
-      'turn' => $game->getTurn(),
-      'isVictory' => $game->getIsVictory()
+      'game' => $context->getGame(),
+      'isOwner' => $context->getIsOwner()
     ]));
-  }
-
-  public function play(string $id) {
-    $game = $this->gameRepository->findGameById($id);
-    return $this->renderGrid($id, $game);
   }
 
   public function new() {
     $game = $this->api->new(self::DEFAULT_SIZE);
     $this->gameRepository->save($game);
-    return $this->redirectToRoute('game', array('id' => $game->getId()));
+
+    $response = $this->redirectToRoute('game', [
+      'id' => $game->getId()
+    ]);
+    CookieAuthManager::setOwner($response, $game);
+
+    return $response;    
   }
 
-  public function cancel($id) {
-    $this->gameRepository->remove($id);
-    return $this->redirectToRoute('index');
+  public function cancel(GameContext $context) {
+    $response = $this->redirectToRoute('index');
+
+    if ($context->getIsOwner()) {
+      $this->gameRepository->remove($context->getGame()->getId());
+      CookieAuthManager::removeOwner($response);
+    }
+
+    return $response;
   }
 
-  public function move(string $id, int  $tile) {
-    $game = $this->gameRepository->findGameById($id);
-    if (!$game->getIsVictory()) {
+  public function move(GameContext $context, int $tile) {
+    $game = $context->getGame();
+
+    if ($context->getIsOwner() && !$game->getIsVictory()) {
       $newGame = $this->api->move($game, $tile);
       $this->gameRepository->save($newGame);
     }
-    return $this->redirectToRoute('game', array('id' => $id));    
+
+    return $this->redirectToRoute('game', array('id' => $game->getId()));    
   }
 }

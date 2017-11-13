@@ -1,15 +1,15 @@
 <div>
-  {% for row in grid %}
+  {% for row in game.currentGrid %}
     <div class="puzzle-row">
       {% for value in row %}
         {% if value == 0 %}
           <div class="puzzle-tile">&nbsp;</div>
         {% else %}
           <div class="puzzle-tile z-depth-1">
-            {% if isVictory %}
+            {% if readOnly %}
               <span class="puzzle-tile-value">{{value}}</span>
             {% else %} 
-              <a class="puzzle-tile-value" href="{{ path('game_move', {'id': id, 'tile': value}) }}">{{value}}</a>
+              <a class="puzzle-tile-value" href="{{ path('game_move', {'id': game.id, 'tile': value}) }}">{{value}}</a>
             {% endif %}           
           </div>
         {% endif %}

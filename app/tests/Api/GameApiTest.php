@@ -15,6 +15,7 @@ use GuzzleHttp\Psr7\Response;
 
 use App\Api\GameApi;
 use App\Entity\Game;
+use App\Api\TokenGenerator;
 
 class GameApiTest extends TestCase {
   private function createGuzzleHttpMock($body, $status, $headers) {
@@ -32,10 +33,14 @@ class GameApiTest extends TestCase {
     $encoders = array(new XmlEncoder(), new JsonEncoder());
     $normalizers = array(new ObjectNormalizer());    
     $serializer = new Serializer($normalizers, $encoders);
-    return new GameApi($client, $serializer);
+    $tokenGeneratorStub = $this->createMock(TokenGenerator::class);
+    $tokenGeneratorStub->method('generate')->willReturn('mockedToken');
+
+    return new GameApi($client, $serializer, $tokenGeneratorStub);
   }
 
   public function testNew() {
+    
     $mockedResponse = [
       'InitialGrid' => array(
         array(1, 2, 3),
@@ -50,10 +55,11 @@ class GameApiTest extends TestCase {
     ];
 
     $gameApi = $this->createGameApi($mockedResponse);
-    
+
     $game = $gameApi->new(3);
 
     $expectedGame = new Game(
+      'mockedToken',
       array(
         array(1, 2, 3),
         array(4, 5, 6),
@@ -65,13 +71,15 @@ class GameApiTest extends TestCase {
         array(7, 8, 6)
       )
     );
+
+    $this->assertEquals($game->getToken(), $expectedGame->getToken());
     $this->assertEquals($game->getResolvedGrid(), $expectedGame->getResolvedGrid());
     $this->assertEquals($game->getCurrentGrid(), $expectedGame->getCurrentGrid());
     $this->assertEquals($game->getTurn(), $expectedGame->getTurn());
     $this->assertEquals($game->getIsVictory(), $expectedGame->getIsVictory());
   }
 
-  public function testMove() {
+  public function testMove() {    
     $mockedResponse = [
       'Grid' => array(
         array(1, 2, 3),
@@ -85,6 +93,7 @@ class GameApiTest extends TestCase {
 
     $game = $gameApi->move(
       new Game(
+        'mockedToken',
         array(
           array(1, 2, 3),
           array(4, 5, 6),
@@ -100,6 +109,7 @@ class GameApiTest extends TestCase {
     );
 
     $expectedGame = new Game(
+      'mockedToken',
       array(
         array(1, 2, 3),
         array(4, 5, 6),
@@ -112,13 +122,14 @@ class GameApiTest extends TestCase {
       )
     );
     $expectedGame->addTurn();
+    $this->assertEquals($game->getToken(), $expectedGame->getToken());    
     $this->assertEquals($game->getResolvedGrid(), $expectedGame->getResolvedGrid());
     $this->assertEquals($game->getCurrentGrid(), $expectedGame->getCurrentGrid());
     $this->assertEquals($game->getTurn(), $expectedGame->getTurn());
     $this->assertEquals($game->getIsVictory(), $expectedGame->getIsVictory());
   }
   
-  public function testSuggest() {
+  public function testSuggest() {    
     $mockedResponse = [
       'Tile' => 3
     ];
@@ -127,6 +138,7 @@ class GameApiTest extends TestCase {
 
     $suggestion = $gameApi->suggest(
       new Game(
+        'mockedToken',      
         array(
           array(1, 2, 3),
           array(4, 5, 6),
