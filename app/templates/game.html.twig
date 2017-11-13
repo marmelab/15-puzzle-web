@@ -8,35 +8,56 @@
 
 {% block header %}
   <div class="section">
-    {% if game.isVictory %}
-      {% if isOwner %}
-        <h5>Congratulations, you have solved the puzzle in {{ game.turn }} turns!</h5>
-      {% else %}
-        <h5>The puzzle has been solved in {{ game.turn }} turns!</h5>
-      {% endif %}
-    {% else %}
-      <h5>Turn {{ game.turn }}</h5>
-      {% if isOwner %}
-        <p>Try to solve the puzzle by clicking on the tiles you want to move</p>
-      {% else %}
-        <p>You can only watch this puzzle. Create a <a href="{{ path('game_new')}}">new game</a> to play.</p>
-      {% endif %}
-    {% endif %}
+    <div class="row">
+      <div class="col s12">
+        {% if game.isVictory %}
+          {% if isOwner %}
+            <h5>Congratulations, you have solved the puzzle in {{ game.turn }} turns!</h5>
+          {% else %}
+            <h5>The puzzle has been solved in {{ game.turn }} turns!</h5>
+          {% endif %}
+        {% else %}
+          <h5>Turn {{ game.turn }}</h5>
+          {% if isOwner %}
+            <p>Try to solve the puzzle by clicking on the tiles you want to move</p>
+          {% else %}
+            <p>You can only watch this puzzle. Create a <a href="{{ path('game_new')}}">new game</a> to play.</p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
   </div>
 {% endblock %}
 
 {% block content %}
   <div class="section">
     <div class="row">
-      {% include 'grid.html.twig' with {'game': game, 'readOnly': game.isVictory or not isOwner} %}
+      <div class="col s12">
+        {% include 'grid.html.twig' with {'game': game, 'readOnly': game.isVictory or not isOwner} %}
+      </div>
     </div>
     <div class="row">
-      {% if game.isVictory %}
-        <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
-        <a class="btn blue" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
-      {% elseif isOwner %}
-        <a class="btn red" href="{{ path('game_cancel', {'id': game.id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
-      {% endif %}
+      <div class="col s12">
+        {% if game.isVictory %}
+          <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
+          <a class="btn blue" href="{{ path('game_new') }}"><i class="material-icons left">add_circle_outline</i>Start a new game</a>
+        {% elseif isOwner %}
+          <a class="btn red" href="{{ path('game_cancel', {'id': game.id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        <div class="divider"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        <h5>More</h5>
+      </div>
+      <div class="col s12">
+        {% include 'share_url.html.twig' with {'url': app.request.uri } %}
+      </div>
     </div>
   </div>
 {% endblock %}
