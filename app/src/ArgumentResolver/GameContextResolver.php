@@ -13,7 +13,7 @@ class GameContextResolver implements ArgumentValueResolverInterface {
   private $gameRepository;
 
   public function __construct(GameRepository $gameRepository) {
-    $this->gameRepository = $gameRepository;    
+    $this->gameRepository = $gameRepository;
   }
 
   public function supports(Request $request, ArgumentMetadata $argument) {
@@ -22,11 +22,15 @@ class GameContextResolver implements ArgumentValueResolverInterface {
 
   public function resolve(Request $request, ArgumentMetadata $argument) {
     $game = $this->gameRepository->findGameById($request->get('id'));
-    $isOwner = CookieAuthManager::isOwner($request, $game);
-
+    $isPlayer = CookieAuthManager::isPlayer($request, $game);
+    
     $gameContext = new GameContext();
     $gameContext->setGame($game);
-    $gameContext->setIsOwner($isOwner);
+    $gameContext->setIsPlayer($isPlayer);
+    if ($isPlayer) {
+      $player = CookieAuthManager::getPlayer($request, $game);
+      $gameContext->setPlayer($player);
+    }
     yield $gameContext;
   }
 }

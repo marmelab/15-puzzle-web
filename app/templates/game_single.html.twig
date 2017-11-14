@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block refresh %}
+  {% if not isOwner and not winner %}
+    <meta http-equiv="refresh" content="3">
+  {% endif %}
+{% endblock %}
+
+{% block header %}
+  <div class="section">
+    <div class="row">
+      <div class="col s12">
+        {% if winner %}
+          {% if isOwner %}
+            <h5>Congratulations, you have solved the puzzle in {{ winner.turn }} turns!</h5>
+          {% else %}
+            <h5>The puzzle has been solved in {{ winner.turn }} turns!</h5>
+          {% endif %}
+        {% else %}
+          <h5>Turn {{ player.turn }}</h5>
+          {% if isOwner %}
+            <p>Try to solve the puzzle by clicking on the tiles you want to move</p>
+          {% else %}
+            <p>You can only watch this puzzle. Create a <a href="{{ path('game_new', {'mode': 'single'})}}">singleplayer</a> or a <a href="{{ path('game_new', {'mode': 'multi'})}}">multiplayer</a> game to play.</p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="section">
+    <div class="row">
+      <div class="col s12">
+        {% include 'grid.html.twig' with {'game': game, 'player': player, 'readOnly': winner or not isOwner} %}
+      </div>
+    </div>
+    {% include 'game_actions.html.twig' %}
+  </div>
+{% endblock %}

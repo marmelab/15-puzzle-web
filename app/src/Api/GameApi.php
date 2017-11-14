@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Serializer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use App\Entity\Game;
+use App\Entity\Player;
 use App\Api\TokenGenerator;
 use App\Api\GameResponse;
 use App\Api\MoveResponse;
@@ -22,38 +23,44 @@ class GameApi {
     $this->tokenGenerator = $tokenGenerator;
   }
 
-  public function new(int $size) : Game {
+  public function new(int $size, bool $isMultiplayer) : Array {
     $response = $this->client->get('/new', [
       'query' => 'size=' . $size
     ]);
     $gameResponse = $this->serializer->deserialize($response->getBody(), GameResponse::class, 'json');
-    return new Game($this->tokenGenerator->generate(), $gameResponse->getInitialGrid(), $gameResponse->getGrid());
+
+    $player = new Player($this->tokenGenerator->generate(), $gameResponse->getGrid());
+    $game = new Game($gameResponse->getInitialGrid(), $isMultiplayer);
+    $game->setPlayer1($player);
+    return ['game' => $game, 'player' => $player];
   }
 
-  public function move(Game $game, int $tile) : Game {
+  public function move(Game $game, Player $player, int $tile) : Array {
     try {
       $response = $this->client->post('/move-tile', [
         'body' => json_encode([
           'InitialGrid' => $game->getResolvedGrid(),
-          'Grid' => $game->getCurrentGrid(),
+          'Grid' => $player->getCurrentGrid(),
           'TileNumber' => $tile
         ])
       ]);
     } catch (ConnectException $e) {
-      return $game;
+      return ['game' => $game, 'player' => $player];
     }
 
     $moveResponse = $this->serializer->deserialize($response->getBody(), MoveResponse::class, 'json');
-    $game->setCurrentGrid($moveResponse->getGrid());
-    $game->addTurn();
-    $game->setIsVictory($moveResponse->getIsVictory());
-    return $game;
+    $player->setCurrentGrid($moveResponse->getGrid());
+    $player->addTurn();
+    if ($moveResponse->getIsVictory()) {
+      $game->setWinner($player);
+    }
+    return ['game' => $game, 'player' => $player];
   }
 
-  public function suggest(Game $game) : int {
+  public function suggest(Game $game, Player $player) : int {
     $response = $this->client->get('/suggest', [
       'query' => [
-        'Grid' => json_encode($game->getCurrentGrid()),
+        'Grid' => json_encode($player->getCurrentGrid()),
         'InitialGrid' => json_encode($game->getResolvedGrid())
     ]]);
     $suggestResponse = $this->serializer->deserialize($response->getBody(), SuggestResponse::class, 'json');

@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Doctrine\ORM\PersistentCollection;
+use App\Entity\Player;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GameRepository")
  * @ORM\Table
@@ -14,39 +15,39 @@ class Game {
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
    */
-  private $id;
-
-  /**
-   * @ORM\Column(type="string")
-   */
-  private $token;
+  protected $id;
 
   /**
    * @ORM\Column(type="json_array")
    */
-  private $resolvedGrid;
+  protected $resolvedGrid;
 
   /**
-   * @ORM\Column(type="json_array")
+   * @ORM\OneToOne(targetEntity="Player", mappedBy="id")
+   * @ORM\JoinColumn(name="player1", referencedColumnName="id")
    */
-  private $currentGrid;
-  
+  protected $player1;
+
   /**
-   * @ORM\Column(type="integer")
+   * @ORM\OneToOne(targetEntity="Player", mappedBy="id")
+   * @ORM\JoinColumn(name="player2", referencedColumnName="id")
    */
-  private $turn;
-  
+  protected $player2;
+
+  /**
+   * @ORM\OneToOne(targetEntity="Player", mappedBy="id")
+   * @ORM\JoinColumn(name="winner", referencedColumnName="id")
+   */
+  protected $winner;
+
   /**
    * @ORM\Column(type="boolean")
    */
-  private $isVictory;
+  protected $isMultiplayer;
 
-  public function __construct($token, $resolvedGrid, $currentGrid, $isVictory=false) {
-    $this->token = $token;
+  public function __construct($resolvedGrid, $isMultiplayer = false) {
     $this->resolvedGrid =$resolvedGrid;
-    $this->currentGrid = $currentGrid;
-    $this->turn = 0;
-    $this->isVictory = $isVictory;
+    $this->isMultiplayer = $isMultiplayer;
   }
 
   // Getters
@@ -55,24 +56,24 @@ class Game {
     return $this->id;
   }
 
-  public function getToken() : string {
-    return $this->token;
-  }
-
   public function getResolvedGrid() : Array {
     return $this->resolvedGrid;
   }
-
-  public function getCurrentGrid() : Array {
-    return $this->currentGrid;
+  
+  public function getPlayer1() : Player {
+    return $this->player1;
   }
 
-  public function getTurn() : int {
-    return $this->turn;
+  public function getPlayer2() : ?Player {
+    return $this->player2;
   }
 
-  public function getIsVictory() : bool {
-    return $this->isVictory;
+  public function getWinner() : ?Player {
+    return $this->winner;
+  }
+
+  public function getIsMultiplayer() : bool {
+    return $this->isMultiplayer;
   }
 
   // Setters
@@ -81,29 +82,29 @@ class Game {
     $this->id = $id;
   }
 
-  private function setToken(string $token) {
-    $this->token = $token;
-  }
-
   public function setResolvedGrid(Array $grid) {
     $this->resolvedGrid = $grid;
   }
-
-  public function setCurrentGrid(Array $grid) {
-    $this->currentGrid = $grid;
+  
+  public function setPlayer1(Player $player) {
+    $this->player1 = $player;
   }
 
-  private function setTurn(int $turn) {
-    $this->turn = $turn;
+  public function setPlayer2(Player $player) {
+    $this->player2 = $player;
   }
 
-  public function setIsVictory(bool $isVictory) {
-    $this->isVictory = $isVictory;
+  public function setWinner(Player $player) {
+    $this->winner = $player;
+  }
+
+  public function setIsMultiplayer(bool $isMultiplayer) {
+    $this->isMultiplayer = $isMultiplayer;
   }
 
   // Methods
 
-  public function addTurn() {
-    $this->turn++;
+  public function isFull() {
+    return !$this->getIsMultiplayer() || ($this->getIsMultiplayer() && $this->player2 != null);
   }
 }

@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col s12">
+    {% if winner %}
+      <a class="btn" href="{{ path('index') }}"><i class="material-icons left">keyboard_return</i>Back to home</a>
+      <a class="btn blue" href="{{ path('game_new', {'mode': 'single'}) }}"><i class="material-icons left">add_circle_outline</i>Start a single game</a>
+    {% elseif isOwner %}
+      <a class="btn red" href="{{ path('game_cancel', {'id': game.id}) }}"><i class="material-icons left">cancel</i>Cancel</a>
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+  <div class="col s12">
+    <div class="divider"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col s12">
+    <h5>More</h5>
+  </div>
+  <div class="col s12">
+    {% include 'share_url.html.twig' with {'url': app.request.uri } %}
+  </div>
+</div>

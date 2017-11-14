@@ -24,7 +24,7 @@ class GameRepository extends EntityRepository {
   }
 
   public function save(Game $game) {
-    $this->em->persist($game);
+    $this->em->persist($game);    
     $this->em->flush();
   }
 }

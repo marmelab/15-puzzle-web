@@ -3,12 +3,16 @@ index:
   defaults: { _controller: 'App\Controller\MainController::start' }
 
 game_new:
-  path: /game
+  path: /game/new/{mode}
   defaults: { _controller: 'App\Controller\GameController::new' }
 
 game:
   path: /game/{id}
   defaults: { _controller: 'App\Controller\GameController::play' }
+
+game_join:
+  path: /game/{id}/join
+  defaults: { _controller: 'App\Controller\GameController::join' }
 
 game_cancel:
   path: /game/{id}/cancel
