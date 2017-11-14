@@ -1,8 +1,12 @@
 doctrine:
     dbal:
-        driver: pdo_sqlite
-        path: '%kernel.project_dir%/var/data.db'
-        charset: UTF8
+        driver:   pdo_pgsql
+        host:     service_postgres
+        port:     5432
+        dbname:   puzzle
+        user:     docker
+        password: docker
+        charset:  UTF8
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
