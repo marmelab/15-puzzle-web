@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Game {
   /**
-   * @ORM\Column(type="guid")
+   * @ORM\Column(type="integer")
    * @ORM\Id
-   * @ORM\GeneratedValue(strategy="UUID")
+   * @ORM\GeneratedValue(strategy="AUTO")
    */
   private $id;
 
@@ -51,7 +51,7 @@ class Game {
 
   // Getters
 
-  public function getId() : string {
+  public function getId() : int {
     return $this->id;
   }
 
@@ -77,7 +77,7 @@ class Game {
 
   // Setters
 
-  public function setId(string $id) {
+  public function setId(int $id) {
     $this->id = $id;
   }
 
