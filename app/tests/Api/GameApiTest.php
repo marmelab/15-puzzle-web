@@ -15,6 +15,7 @@ use GuzzleHttp\Psr7\Response;
 
 use App\Api\GameApi;
 use App\Entity\Game;
+use App\Entity\Player;
 use App\Api\TokenGenerator;
 
 class GameApiTest extends TestCase {
@@ -22,7 +23,7 @@ class GameApiTest extends TestCase {
     $mock = new MockHandler([
       new Response($status, $headers, $body)
     ]);
-  
+
     $handler = HandlerStack::create($mock);
     return new Client(['handler' => $handler]);
   }
@@ -31,7 +32,7 @@ class GameApiTest extends TestCase {
     $bodyJson = json_encode($body);
     $client = $this->createGuzzleHttpMock($bodyJson, 200, ['Content-Type' => 'application/json']);
     $encoders = array(new XmlEncoder(), new JsonEncoder());
-    $normalizers = array(new ObjectNormalizer());    
+    $normalizers = array(new ObjectNormalizer());
     $serializer = new Serializer($normalizers, $encoders);
     $tokenGeneratorStub = $this->createMock(TokenGenerator::class);
     $tokenGeneratorStub->method('generate')->willReturn('mockedToken');
@@ -40,7 +41,6 @@ class GameApiTest extends TestCase {
   }
 
   public function testNew() {
-    
     $mockedResponse = [
       'InitialGrid' => array(
         array(1, 2, 3),
@@ -56,30 +56,35 @@ class GameApiTest extends TestCase {
 
     $gameApi = $this->createGameApi($mockedResponse);
 
-    $game = $gameApi->new(3);
+    $apiResponse = $gameApi->new(3, false);
 
-    $expectedGame = new Game(
+    $expectedPlayer = new Player(
       'mockedToken',
-      array(
-        array(1, 2, 3),
-        array(4, 5, 6),
-        array(7, 8, 0)
-      ),
       array(
         array(1, 2, 3),
         array(4, 5, 0),
         array(7, 8, 6)
       )
     );
+    $expectedPlayer->setId(1);
 
-    $this->assertEquals($game->getToken(), $expectedGame->getToken());
-    $this->assertEquals($game->getResolvedGrid(), $expectedGame->getResolvedGrid());
-    $this->assertEquals($game->getCurrentGrid(), $expectedGame->getCurrentGrid());
-    $this->assertEquals($game->getTurn(), $expectedGame->getTurn());
-    $this->assertEquals($game->getIsVictory(), $expectedGame->getIsVictory());
+    $expectedGame = new Game(
+      array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      )
+    );
+
+    $this->assertEquals($apiResponse['player']->getCurrentGrid(), $expectedPlayer->getCurrentGrid());
+    $this->assertEquals($apiResponse['player']->getTurn(), $expectedPlayer->getTurn());
+
+    $this->assertEquals($apiResponse['game']->getResolvedGrid(), $expectedGame->getResolvedGrid());
+    $this->assertEquals($apiResponse['game']->getPlayer1(), $expectedGame->getPlayer1());
+    $this->assertEquals($apiResponse['game']->getIsMultiplayer(), $expectedGame->getIsMultiplayer());
   }
 
-  public function testMove() {    
+  public function testMove() {
     $mockedResponse = [
       'Grid' => array(
         array(1, 2, 3),
@@ -90,15 +95,35 @@ class GameApiTest extends TestCase {
     ];
 
     $gameApi = $this->createGameApi($mockedResponse);
+    $player = new Player(
+      'mockedToken',
+      array(
+        array(1, 2, 3),
+        array(4, 5, 0),
+        array(7, 8, 6)
+      )
+    );
+    $player->setId(1);
+    $game = new Game(
+      array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      )
+    );
+    $game->setPlayer1($player);
+    $apiResponse = $gameApi->move($game, $player, 6);
 
-    $game = $gameApi->move(
+    $apiResponse = $gameApi->move(
       new Game(
-        'mockedToken',
         array(
           array(1, 2, 3),
           array(4, 5, 6),
           array(7, 8, 0)
-        ),
+        )
+      ),
+      new Player(
+        'mockedToken',
         array(
           array(1, 2, 3),
           array(4, 0, 5),
@@ -108,49 +133,100 @@ class GameApiTest extends TestCase {
       5
     );
 
-    $expectedGame = new Game(
+    $expectedPlayer = new Player(
       'mockedToken',
-      array(
-        array(1, 2, 3),
-        array(4, 5, 6),
-        array(7, 8, 0)
-      ),
       array(
         array(1, 2, 3),
         array(4, 5, 0),
         array(7, 8, 6)
       )
     );
-    $expectedGame->addTurn();
-    $this->assertEquals($game->getToken(), $expectedGame->getToken());    
-    $this->assertEquals($game->getResolvedGrid(), $expectedGame->getResolvedGrid());
-    $this->assertEquals($game->getCurrentGrid(), $expectedGame->getCurrentGrid());
-    $this->assertEquals($game->getTurn(), $expectedGame->getTurn());
-    $this->assertEquals($game->getIsVictory(), $expectedGame->getIsVictory());
+    $expectedPlayer->addTurn();
+
+    $this->assertEquals($apiResponse['player']->getCurrentGrid(), $expectedPlayer->getCurrentGrid());
+    $this->assertEquals($apiResponse['player']->getTurn(), $expectedPlayer->getTurn());
   }
-  
-  public function testSuggest() {    
+
+  public function testMoveVictory() {
     $mockedResponse = [
-      'Tile' => 3
+      'Grid' => array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      ),
+      'IsVictory' => true
     ];
 
     $gameApi = $this->createGameApi($mockedResponse);
 
+    $player = new Player(
+      'mockedToken',
+      array(
+        array(1, 2, 3),
+        array(4, 5, 0),
+        array(7, 8, 6)
+      )
+    );
+    $player->setId(1);
+    $game = new Game(
+      array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      )
+    );
+    $game->setPlayer1($player);
+    $apiResponse = $gameApi->move($game, $player, 6);
+
+    $expectedPlayer = new Player(
+      'mockedToken',
+      array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      )
+    );
+    $expectedPlayer->setId(1);
+    $expectedPlayer->addTurn();
+
+    $expectedGame = new Game(
+      array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      )
+    );
+    $expectedGame->setWinner($expectedPlayer);
+
+    $this->assertEquals($apiResponse['player']->getCurrentGrid(), $expectedPlayer->getCurrentGrid());
+    $this->assertEquals($apiResponse['player']->getTurn(), $expectedPlayer->getTurn());
+
+    $this->assertEquals($apiResponse['game']->getWinner()->getId(), $expectedPlayer->getId());
+  }
+
+  public function testSuggest() {
+    $mockedResponse = [
+      'Tile' => 3
+    ];
+    $gameApi = $this->createGameApi($mockedResponse);
+
     $suggestion = $gameApi->suggest(
       new Game(
-        'mockedToken',      
         array(
           array(1, 2, 3),
           array(4, 5, 6),
           array(7, 8, 0)
-        ),
+        )
+      ),
+      new Player(
+        'mockedToken',
         array(
           array(1, 2, 3),
           array(4, 0, 5),
           array(7, 8, 6)
         )
       )
-    );  
+    );
 
     $expectedSuggestion = 3;
 
