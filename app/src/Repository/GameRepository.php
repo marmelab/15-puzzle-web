@@ -17,6 +17,15 @@ class GameRepository extends EntityRepository {
     return $this->em->find('App:Game', $id);
   }
 
+  public function findOpenMultiplayerGames() : Array {
+    $qb = $this->em->createQueryBuilder();
+    $qb->select('game.id')
+      ->from('App:Game', 'game')
+      ->where('game.isMultiplayer = true')
+      ->andWhere('game.player2 IS NULL');
+    return $qb->getQuery()->getResult();
+  }
+
   public function remove(string $id) {
     $game = $this->em->getReference('App:Game', $id);
     $this->em->remove($game);
@@ -24,7 +33,7 @@ class GameRepository extends EntityRepository {
   }
 
   public function save(Game $game) {
-    $this->em->persist($game);    
+    $this->em->persist($game);
     $this->em->flush();
   }
 }

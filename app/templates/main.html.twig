@@ -9,11 +9,25 @@
 {% block content %}
   <div class="section">
     <div class="row">
-      <img src="{{ asset('images/puzzle15-game.jpg') }}" alt="15 puzzle picture"/>
+      <div class="col s12">
+        <img class="responsive-img" src="{{ asset('images/puzzle15-game.jpg') }}" alt="15 puzzle picture"/>
+      </div>
     </div>
-    <div class="row">    
-      <a class="btn blue" href="{{ path('game_new', {'mode': 'single'}) }}"><i class="material-icons left">play_circle_outline</i>Single game</a>
-      <a class="btn blue" href="{{ path('game_new', {'mode': 'multi'}) }}"><i class="material-icons left">play_circle_outline</i>Multiplayer game</a>
+    <div class="row">
+      <div class="col s12">
+        <a class="btn blue" href="{{ path('game_new', {'mode': 'single'}) }}"><i class="material-icons left">play_circle_outline</i>Single game</a>
+        <a class="btn blue" href="{{ path('game_new', {'mode': 'multi'}) }}"><i class="material-icons left">play_circle_outline</i>Multiplayer game</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        <div class="divider"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        {% include 'list_games.html.twig' with {'listGames': listGames } %}
+      </div>
     </div>
   </div>
 {% endblock %}

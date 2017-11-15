@@ -1,0 +1,19 @@
+<div>
+  {% if listGames|length > 0 %}
+    <ul class="collection with-header">
+      <li class="collection-header">
+        <h4>Open multiplayer games</h4>
+      </li>
+      {% for game in listGames %}
+      <li class="collection-item">
+        <div>
+          Game #{{game.id}}
+          <a href="{{ path('game_join', {'id': game.id}) }}" class="secondary-content"><i class="material-icons">add_circle_outline</i></a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There is no open multiplayer game.</p>
+  {% endif %}
+</div>

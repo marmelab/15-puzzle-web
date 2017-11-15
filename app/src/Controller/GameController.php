@@ -20,6 +20,8 @@ class GameController extends Controller {
 
   private $api;
   private $twig;
+  private $gameRepository;
+  private $playerRepository;
 
   public function __construct(\Twig_Environment $twig, GameApi $gameApi, GameRepository $gameRepository, PlayerRepository $playerRepository) {
     $this->twig = $twig;
