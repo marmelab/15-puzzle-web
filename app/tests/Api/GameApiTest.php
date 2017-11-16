@@ -57,7 +57,6 @@ class GameApiTest extends TestCase {
     $gameApi = $this->createGameApi($mockedResponse);
 
     $apiResponse = $gameApi->new(3, false);
-
     $expectedPlayer = new Player(
       'mockedToken',
       array(
@@ -75,12 +74,13 @@ class GameApiTest extends TestCase {
         array(7, 8, 0)
       )
     );
+    $expectedGame->setPlayer1($expectedPlayer);
 
     $this->assertEquals($apiResponse['player']->getCurrentGrid(), $expectedPlayer->getCurrentGrid());
     $this->assertEquals($apiResponse['player']->getTurn(), $expectedPlayer->getTurn());
 
     $this->assertEquals($apiResponse['game']->getResolvedGrid(), $expectedGame->getResolvedGrid());
-    $this->assertEquals($apiResponse['game']->getPlayer1(), $expectedGame->getPlayer1());
+    $this->assertEquals($apiResponse['game']->getPlayer1()->getToken(), $expectedGame->getPlayer1()->getToken());
     $this->assertEquals($apiResponse['game']->getIsMultiplayer(), $expectedGame->getIsMultiplayer());
   }
 
@@ -113,25 +113,6 @@ class GameApiTest extends TestCase {
     );
     $game->setPlayer1($player);
     $apiResponse = $gameApi->move($game, $player, 6);
-
-    $apiResponse = $gameApi->move(
-      new Game(
-        array(
-          array(1, 2, 3),
-          array(4, 5, 6),
-          array(7, 8, 0)
-        )
-      ),
-      new Player(
-        'mockedToken',
-        array(
-          array(1, 2, 3),
-          array(4, 0, 5),
-          array(7, 8, 6)
-        )
-      ),
-      5
-    );
 
     $expectedPlayer = new Player(
       'mockedToken',

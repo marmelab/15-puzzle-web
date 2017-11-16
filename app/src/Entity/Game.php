@@ -59,7 +59,7 @@ class Game {
   public function getResolvedGrid() : Array {
     return $this->resolvedGrid;
   }
-  
+
   public function getPlayer1() : Player {
     return $this->player1;
   }
@@ -85,7 +85,7 @@ class Game {
   public function setResolvedGrid(Array $grid) {
     $this->resolvedGrid = $grid;
   }
-  
+
   public function setPlayer1(Player $player) {
     $this->player1 = $player;
   }
@@ -105,6 +105,6 @@ class Game {
   // Methods
 
   public function isFull() {
-    return !$this->getIsMultiplayer() || ($this->getIsMultiplayer() && $this->player2 != null);
+    return (!$this->getIsMultiplayer() && $this->player1 != null) || ($this->getIsMultiplayer() && $this->player1 != null && $this->player2 != null);
   }
 }
