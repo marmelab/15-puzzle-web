@@ -22,4 +22,30 @@ class PlayerTest extends TestCase {
 
     $this->assertEquals(23, $player->getTurn());
   }
+
+  public function testJsonSerialize() {
+    $player = new Player(
+      'randomtoken',
+      array(
+        array(1, 2, 3),
+        array(4, 0, 5),
+        array(7, 8, 6)
+      )
+    );
+    $player->setId(18);
+
+    $expectedPlayerJson = [
+      'player' => [
+        'id' => 18,
+        'currentGrid' => array(
+          array(1, 2, 3),
+          array(4, 0, 5),
+          array(7, 8, 6)
+        ),
+        'turn' => 0
+      ]
+    ];
+
+    $this->assertEquals($expectedPlayerJson, $player->jsonSerialize());
+  }
 }
