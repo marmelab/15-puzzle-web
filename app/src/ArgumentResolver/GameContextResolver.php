@@ -7,7 +7,9 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use App\ArgumentResolver\GameContext;
 use App\Authentication\CookieAuthManager;
+use App\Authentication\TokenAuthManager;
 use App\Repository\GameRepository;
+
 
 class GameContextResolver implements ArgumentValueResolverInterface {
   private $gameRepository;
@@ -22,8 +24,9 @@ class GameContextResolver implements ArgumentValueResolverInterface {
 
   public function resolve(Request $request, ArgumentMetadata $argument) {
     $game = $this->gameRepository->findGameById($request->get('id'));
-    $isPlayer = CookieAuthManager::isPlayer($request, $game);
-    
+    $token = $request->headers->get('Authorization');
+
+    $isPlayer = $token ? TokenAuthManager::isPlayer($request, $game, $token) : CookieAuthManager::isPlayer($request, $game);
     $gameContext = new GameContext();
     $gameContext->setGame($game);
     $gameContext->setIsPlayer($isPlayer);
