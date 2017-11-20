@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\PlayerRepository")
  * @ORM\Table
  */
-class Player {
+class Player implements \JsonSerializable {
   /**
    * @ORM\Column(type="integer")
    * @ORM\Id
@@ -20,7 +20,7 @@ class Player {
    * @ORM\Column(type="string")
    */
   private $token;
-  
+
   /**
    * @ORM\Column(type="json_array")
    */
@@ -77,5 +77,17 @@ class Player {
 
   public function addTurn() {
     $this->turn++;
+  }
+
+  // JsonSerializable interface
+
+  public function jsonSerialize() {
+    return [
+      'player' => [
+        'id' => $this->getId(),
+        'currentGrid' => $this->getCurrentGrid(),
+        'turn' => $this->getTurn()
+      ]
+    ];
   }
 }

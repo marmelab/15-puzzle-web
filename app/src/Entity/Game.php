@@ -9,7 +9,7 @@ use App\Entity\Player;
  * @ORM\Entity(repositoryClass="App\Repository\GameRepository")
  * @ORM\Table
  */
-class Game {
+class Game  implements \JsonSerializable {
   /**
    * @ORM\Column(type="integer")
    * @ORM\Id
@@ -106,5 +106,21 @@ class Game {
 
   public function isFull() {
     return (!$this->getIsMultiplayer() && $this->player1 != null) || ($this->getIsMultiplayer() && $this->player1 != null && $this->player2 != null);
+  }
+
+  // JsonSerializable interface
+
+  public function jsonSerialize() {
+    return [
+      'game' => [
+        'id' => $this->getId(),
+        'resolvedGrid' => $this->getResolvedGrid(),
+        'player1' => $this->getPlayer1(),
+        'player2' => $this->getPlayer2(),
+        'winner' => $this->getWinner(),
+        'isMultiplayer' => $this->getIsMultiplayer(),
+        'isFull' => $this->isFull()
+      ]
+    ];
   }
 }

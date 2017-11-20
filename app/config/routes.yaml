@@ -2,6 +2,8 @@ index:
   path: /
   defaults: { _controller: 'App\Controller\MainController::start' }
 
+## GAME
+
 game_new:
   path: /game/new/{mode}
   defaults: { _controller: 'App\Controller\GameController::new' }
@@ -21,3 +23,35 @@ game_cancel:
 game_move:
   path: /game/{id}/move/{tile}
   defaults: { _controller: 'App\Controller\GameController::move' }
+
+## API
+
+api_game_new:
+  path: /api/game
+  defaults: { _controller: 'App\Controller\ApiController::new' }
+  methods: [POST]
+
+api_game:
+  path: /api/game/{id}
+  defaults: { _controller: 'App\Controller\ApiController::game' }
+  methods: [GET]
+
+api_game_cancel:
+  path: /api/game/{id}
+  defaults: { _controller: 'App\Controller\ApiController::cancel' }
+  methods: [DELETE]
+
+api_game_join:
+  path: /api/game/{id}/join
+  defaults: { _controller: 'App\Controller\ApiController::join' }
+  methods: [POST]
+
+api_game_move:
+  path: /api/game/{id}/move/{tile}
+  defaults: { _controller: 'App\Controller\ApiController::move' }
+  methods: [PUT]
+
+api_games:
+  path: /api/games/open
+  defaults: { _controller: 'App\Controller\ApiController::games' }
+  methods: [GET]
