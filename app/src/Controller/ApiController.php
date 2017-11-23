@@ -31,7 +31,8 @@ class ApiController extends Controller {
   }
 
   public function new(Request $request) {
-    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $request->get('mode') === 'multi');
+    $body = json_decode($request->getContent(), true);
+    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $body['mode'] === 'multi');
     $this->em->persist($apiResponse['player']);
     $this->em->persist($apiResponse['game']);
     $this->em->flush();
@@ -56,6 +57,7 @@ class ApiController extends Controller {
 
       return new JsonResponse([
         'id' => $game->getId(),
+        'isMultiplayer' => $game->getIsMultiplayer(),
         'currentPlayer' => $player,
         'otherPlayer' => $otherPlayer,
         'winner' => $game->getWinner()
@@ -63,6 +65,7 @@ class ApiController extends Controller {
     }
     return new JsonResponse([
       'id' => $game->getId(),
+      'isMultiplayer' => $game->getIsMultiplayer(),
       'currentPlayer' => $player,
       'winner' => $game->getWinner()
     ]);
@@ -74,15 +77,11 @@ class ApiController extends Controller {
       $this->em->flush();
 
       return new Response(
-        'Content',
-        Response::HTTP_OK,
-        ['content-type' => 'text/html']
+        Response::HTTP_OK
       );
     }
     return new Response(
-      'Content',
-      Response::HTTP_INTERNAL_SERVER_ERROR,
-      ['content-type' => 'text/html']
+      Response::HTTP_INTERNAL_SERVER_ERROR
     );
   }
 
@@ -91,9 +90,7 @@ class ApiController extends Controller {
 
     if ($game->isFull()) {
       return new Response(
-        'Content',
-        Response::HTTP_INTERNAL_SERVER_ERROR,
-        ['content-type' => 'text/html']
+        Response::HTTP_INTERNAL_SERVER_ERROR
       );
     }
 
@@ -115,19 +112,19 @@ class ApiController extends Controller {
 
   public function move(GameContext $context, int $tile) {
     $game = $context->getGame();
-    $player = $context->getPlayer();
+    $currentPlayer = $context->getPlayer();
 
     if ($context->getIsPlayer() && $game->getWinner() === null) {
-      $apiResponse = $this->api->move($game, $player, $tile);
+      $apiResponse = $this->api->move($game, $currentPlayer, $tile);
       $this->em->persist($apiResponse['game']);
+      $this->em->persist($currentPlayer);
       $this->em->flush();
     }
 
     return new JsonResponse([
       'id' => $game->getId(),
-      'currentPlayer' => $this->serializer->serialize($player, 'json'),
-      'otherPlayer' => $this->serializer->serialize($otherPlayer, 'json'),
-      'winner' => $this->serializer->serialize($game->getWinner(), 'json')
+      'currentPlayer' => $currentPlayer,
+      'winner' => $game->getWinner()
     ]);
   }
 
@@ -135,7 +132,7 @@ class ApiController extends Controller {
     $gameIds = $this->gameRepository->findOpenMultiplayerGames();
 
     return new JsonResponse([
-      'game_ids' => $gameIds
+      'gameIds' => $gameIds
     ]);
   }
 }

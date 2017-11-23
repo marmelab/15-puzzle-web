@@ -13,11 +13,17 @@ class CookieAuthManager {
   public const COOKIE_NAME = 'current-puzzle';
 
   public static function isPlayer(Request $request, Game $game) : bool {
-    return TokenAuthManager::isPlayer($request, $game, $request->cookies->get(self::COOKIE_NAME));
+    $tokenCookie = $request->cookies->get(self::COOKIE_NAME);
+    $token = $tokenCookie ?: '';
+
+    return TokenAuthManager::isPlayer($request, $game, $token);
   }
 
   public static function getPlayer(Request $request, Game $game) {
-    return TokenAuthManager::getPlayer($request, $game, $request->cookies->get(self::COOKIE_NAME));
+    $tokenCookie = $request->cookies->get(self::COOKIE_NAME);
+    $token = $tokenCookie ?: '';
+
+    return TokenAuthManager::getPlayer($request, $game, $token);
   }
 
   public static function setPlayer(Response $response, Player $player) {

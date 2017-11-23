@@ -11,7 +11,10 @@ class TokenAuthManager {
   public static function isPlayer(Request $request, Game $game, string $token) : bool {
     $player1 = $game->getPlayer1();
     $player2 = $game->getPlayer2();
-    return $player1->getToken() === $token || !$game->isFull() && $player2->getToken() == $token;
+
+    return $player1->getToken() === $token ||
+      $game->getIsMultiplayer() &&
+      $player2 && $player2->getToken() === $token;
   }
 
   public static function getPlayer(Request $request, Game $game, string $token) {

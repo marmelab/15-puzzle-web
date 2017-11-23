@@ -83,11 +83,9 @@ class Player implements \JsonSerializable {
 
   public function jsonSerialize() {
     return [
-      'player' => [
-        'id' => $this->getId(),
-        'currentGrid' => $this->getCurrentGrid(),
-        'turn' => $this->getTurn()
-      ]
+      'id' => $this->getId(),
+      'currentGrid' => $this->getCurrentGrid(),
+      'turn' => $this->getTurn()
     ];
   }
 }
