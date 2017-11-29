@@ -36,3 +36,8 @@ services:
     game_api:
         class: App\Api\GameApi
         arguments: ["@csa_guzzle.client.puzzle_api"]
+
+    cors_listener:
+        class: App\Security\CorsListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
