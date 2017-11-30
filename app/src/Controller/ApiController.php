@@ -129,4 +129,22 @@ class ApiController extends Controller {
       'gameIds' => $gameIds
     ]);
   }
+
+  public function suggest(Request $request) {
+    if ($request->getMethod() == 'OPTIONS') {
+      return new Response(Response::HTTP_OK);
+    }
+
+    $body = json_decode($request->getContent(), true);
+    $grid = $body['grid'];
+    $resolvedGrid = $body['resolvedGrid'];
+
+    $tile = $this->api->suggest($grid, $resolvedGrid);
+
+    $response = new JsonResponse();
+    $response->setData([
+      'tile' => $tile
+    ]);
+    return $response;
+  }
 }

@@ -57,11 +57,11 @@ class GameApi {
     return ['game' => $game, 'player' => $player];
   }
 
-  public function suggest(Game $game, Player $player) : int {
+  public function suggest(Array $grid, Array $resolvedGrid) : int {
     $response = $this->client->get('/suggest', [
       'query' => [
-        'Grid' => json_encode($player->getCurrentGrid()),
-        'InitialGrid' => json_encode($game->getResolvedGrid())
+        'Grid' => json_encode($grid),
+        'InitialGrid' => json_encode($resolvedGrid)
     ]]);
     $suggestResponse = $this->serializer->deserialize($response->getBody(), SuggestResponse::class, 'json');
     return $suggestResponse->getTile();
