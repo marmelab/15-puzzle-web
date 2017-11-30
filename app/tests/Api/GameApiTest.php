@@ -192,20 +192,15 @@ class GameApiTest extends TestCase {
     $gameApi = $this->createGameApi($mockedResponse);
 
     $suggestion = $gameApi->suggest(
-      new Game(
-        array(
-          array(1, 2, 3),
-          array(4, 5, 6),
-          array(7, 8, 0)
-        )
+      array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
       ),
-      new Player(
-        'mockedToken',
-        array(
-          array(1, 2, 3),
-          array(4, 0, 5),
-          array(7, 8, 6)
-        )
+      array(
+        array(1, 2, 3),
+        array(4, 0, 5),
+        array(7, 8, 6)
       )
     );
 
