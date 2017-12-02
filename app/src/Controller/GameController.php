@@ -36,7 +36,7 @@ class GameController extends Controller {
     $player = $currentPlayer ?: $game->getPlayer1();
     if ($game->getIsMultiplayer()) {
       if ($currentPlayer) {
-        $otherPlayer = $player->getId() == $game->getPlayer1()->getId() ? $game->getPlayer2() : $game->getPlayer1();
+        $otherPlayer = $player->getId() === $game->getPlayer1()->getId() ? $game->getPlayer2() : $game->getPlayer1();
       } else {
         $otherPlayer = $game->getPlayer2();
       }
@@ -59,7 +59,7 @@ class GameController extends Controller {
   }
 
   public function new(string $mode) {
-    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $mode == 'multi');
+    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $mode === 'multi');
     $this->playerRepository->save($apiResponse['player']);
     $this->gameRepository->save($apiResponse['game']);
 
@@ -105,7 +105,7 @@ class GameController extends Controller {
   public function move(GameContext $context, int $tile) {
     $game = $context->getGame();
     $player = $context->getPlayer();
-    if ($context->getIsPlayer() && $game->getWinner() == null) {
+    if ($context->getIsPlayer() && $game->getWinner() === null) {
       $apiResponse = $this->api->move($game, $player, $tile);
       $this->gameRepository->save($apiResponse['game']);
     }

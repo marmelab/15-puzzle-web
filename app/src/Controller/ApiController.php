@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,24 +24,23 @@ class ApiController extends Controller {
   private $gameRepository;
   private $playerRepository;
 
-  public function __construct(GameApi $gameApi, GameRepository $gameRepository, PlayerRepository $playerRepository) {
+  public function __construct(GameApi $gameApi, EntityManager $em) {
     $this->api = $gameApi;
+    $this->em = $em;
     $this->gameRepository = $gameRepository;
     $this->playerRepository = $playerRepository;
   }
 
   public function new(Request $request) {
-    $mode = $request->get('mode');
-    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $mode && $mode == 'multi');
-    $this->playerRepository->save($apiResponse['player']);
-    $this->gameRepository->save($apiResponse['game']);
+    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $request->get('mode') === 'multi');
+    $this->em->persist($apiResponse['player']);
+    $this->em->persist($apiResponse['game']);
+    $this->em->flush();
 
-    $response = new JsonResponse();
-    $response->setData([
+    return new JsonResponse([
       'id' => $apiResponse['game']->getId(),
       'token' => $apiResponse['player']->getToken()
     ]);
-    return $response;
   }
 
   public function game(GameContext $context) {
@@ -48,34 +48,32 @@ class ApiController extends Controller {
     $currentPlayer = $context->getPlayer();
     $player = $currentPlayer ?: $game->getPlayer1();
 
-    $response = new JsonResponse();
-
     if ($game->getIsMultiplayer()) {
       if ($currentPlayer) {
-        $otherPlayer = $player->getId() == $game->getPlayer1()->getId() ? $game->getPlayer2() : $game->getPlayer1();
+        $otherPlayer = $player->getId() === $game->getPlayer1()->getId() ? $game->getPlayer2() : $game->getPlayer1();
       } else {
         $otherPlayer = $game->getPlayer2();
       }
 
-      $response->setData([
+      return new JsonResponse([
         'id' => $game->getId(),
         'currentPlayer' => $player,
         'otherPlayer' => $otherPlayer,
         'winner' => $game->getWinner()
       ]);
-    } else {
-      $response->setData([
-        'id' => $game->getId(),
-        'currentPlayer' => $player,
-        'winner' => $game->getWinner()
-      ]);
     }
-    return $response;
+    return new JsonResponse([
+      'id' => $game->getId(),
+      'currentPlayer' => $player,
+      'winner' => $game->getWinner()
+    ]);
   }
 
   public function cancel(GameContext $context) {
     if ($context->getIsPlayer()) {
-      $this->gameRepository->remove($context->getGame()->getId());
+      $this->em->remove($context->getGame());
+      $this->em->flush();
+
       return new Response(
         'Content',
         Response::HTTP_OK,
@@ -103,44 +101,42 @@ class ApiController extends Controller {
     $currentGrid = $game->getPlayer1()->getCurrentGrid();
     $newPlayer = new Player($tokenGenerator->generate(), $currentGrid);
     $this->playerRepository->save($newPlayer);
+    $this->em->persist($newPlayer);
 
     $game->setPlayer2($newPlayer);
-    $this->gameRepository->save($game);
+    $this->em->persist($game);
 
-    $response = new JsonResponse();
-    $response->setData([
+    $this->em->flush();
+
+    return new JsonResponse([
       'id' => $game->getId(),
       'token' => $newPlayer->getToken()
     ]);
-    return $response;
   }
 
   public function move(GameContext $context, int $tile) {
     $game = $context->getGame();
     $player = $context->getPlayer();
 
-    if ($context->getIsPlayer() && $game->getWinner() == null) {
+    if ($context->getIsPlayer() && $game->getWinner() === null) {
       $apiResponse = $this->api->move($game, $player, $tile);
-      $this->gameRepository->save($apiResponse['game']);
+      $this->em->persist($apiResponse['game']);
+      $this->em->flush();
     }
 
-    $response = new JsonResponse();
-    $response->setData([
+    return new JsonResponse([
       'id' => $game->getId(),
       'currentPlayer' => $this->serializer->serialize($player, 'json'),
       'otherPlayer' => $this->serializer->serialize($otherPlayer, 'json'),
       'winner' => $this->serializer->serialize($game->getWinner(), 'json')
     ]);
-    return $response;
   }
 
   public function games() {
     $gameIds = $this->gameRepository->findOpenMultiplayerGames();
 
-    $response = new JsonResponse();
-    $response->setData([
+    return new JsonResponse([
       'game_ids' => $gameIds
     ]);
-    return $response;
   }
 }
