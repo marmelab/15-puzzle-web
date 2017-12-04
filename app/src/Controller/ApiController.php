@@ -24,11 +24,10 @@ class ApiController extends Controller {
   private $gameRepository;
   private $playerRepository;
 
-  public function __construct(GameApi $gameApi, EntityManager $em) {
+  public function __construct(GameApi $gameApi, GameRepository $gameRepository, EntityManager $em) {
     $this->api = $gameApi;
     $this->em = $em;
     $this->gameRepository = $gameRepository;
-    $this->playerRepository = $playerRepository;
   }
 
   public function new(Request $request) {
