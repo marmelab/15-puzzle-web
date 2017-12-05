@@ -31,10 +31,6 @@ class ApiController extends Controller {
   }
 
   public function new(Request $request) {
-    if ($request->getMethod() == 'OPTIONS') {
-      return new Response(Response::HTTP_OK);
-    }
-
     $body = json_decode($request->getContent(), true);
     $apiResponse = $this->api->new(self::DEFAULT_SIZE, $body['mode'] === 'multi');
     $this->em->persist($apiResponse['player']);
@@ -48,10 +44,6 @@ class ApiController extends Controller {
   }
 
   public function game(Request $request, GameContext $context) {
-    if ($request->getMethod() == 'OPTIONS') {
-      return new Response(Response::HTTP_OK);
-    }
-
     $game = $context->getGame();
     $currentPlayer = $context->getPlayer();
     $player = $currentPlayer ?: $game->getPlayer1();
@@ -80,10 +72,6 @@ class ApiController extends Controller {
   }
 
   public function cancel(Request $request, GameContext $context) {
-    if ($request->getMethod() == 'OPTIONS') {
-      return new Response(Response::HTTP_OK);
-    }
-
     if ($context->getIsPlayer()) {
       $this->em->remove($context->getGame());
       $this->em->flush();
@@ -96,10 +84,6 @@ class ApiController extends Controller {
   }
 
   public function join(Request $request, GameContext $context, TokenGenerator $tokenGenerator) {
-    if ($request->getMethod() == 'OPTIONS') {
-      return new Response(Response::HTTP_OK);
-    }
-
     $game = $context->getGame();
 
     if ($game->isFull()) {
@@ -125,10 +109,6 @@ class ApiController extends Controller {
   }
 
   public function move(Request $request, GameContext $context, int $tile) {
-    if ($request->getMethod() == 'OPTIONS') {
-      return new Response(Response::HTTP_OK);
-    }
-
     $game = $context->getGame();
     $currentPlayer = $context->getPlayer();
 
@@ -147,10 +127,6 @@ class ApiController extends Controller {
   }
 
   public function games(Request $request) {
-    if ($request->getMethod() == 'OPTIONS') {
-      return new Response(Response::HTTP_OK);
-    }
-
     $gameIds = $this->gameRepository->findOpenMultiplayerGames();
 
     return new JsonResponse([
