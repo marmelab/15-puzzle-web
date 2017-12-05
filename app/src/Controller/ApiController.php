@@ -76,20 +76,16 @@ class ApiController extends Controller {
       $this->em->remove($context->getGame());
       $this->em->flush();
 
-      return new Response(
-        Response::HTTP_OK
-      );
+      return new Response('The game has been canceled with success', Response::HTTP_OK);
     }
-    return new Response(Response::HTTP_INTERNAL_SERVER_ERROR);
+    return new Response('An unexpected error occured', Response::HTTP_INTERNAL_SERVER_ERROR);
   }
 
   public function join(Request $request, GameContext $context, TokenGenerator $tokenGenerator) {
     $game = $context->getGame();
 
     if ($game->isFull()) {
-      return new Response(
-        Response::HTTP_INTERNAL_SERVER_ERROR
-      );
+      return new Response('The game is full', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     $currentGrid = $game->getPlayer1()->getCurrentGrid();

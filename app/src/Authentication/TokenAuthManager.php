@@ -8,7 +8,7 @@ use App\Entity\Game;
 use App\Entity\Player;
 
 class TokenAuthManager {
-  public static function isPlayer(Request $request, Game $game, string $token) : bool {
+  public static function isPlayer(Request $request, Game $game, string $token = null) : bool {
     $player1 = $game->getPlayer1();
     $player2 = $game->getPlayer2();
 

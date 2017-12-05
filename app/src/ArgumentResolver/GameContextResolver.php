@@ -28,14 +28,14 @@ class GameContextResolver implements ArgumentValueResolverInterface {
     $game = $this->gameRepository->findGameById($request->get('id'));
 
     $authTokenArray = explode(' ', $request->headers->get('Authorization'));
-    $token = count($authTokenArray) == 2 && $authTokenArray[0] == self::AUTHORIZATION_TYPE ? $authTokenArray[1] : '';
-    $isPlayer = $token != '' ? TokenAuthManager::isPlayer($request, $game, $token) : CookieAuthManager::isPlayer($request, $game);
+    $token = count($authTokenArray) === 2 && $authTokenArray[0] === self::AUTHORIZATION_TYPE ? $authTokenArray[1] : '';
+    $isPlayer = $token !== '' ? TokenAuthManager::isPlayer($request, $game, $token) : CookieAuthManager::isPlayer($request, $game);
 
     $gameContext = new GameContext();
     $gameContext->setGame($game);
     $gameContext->setIsPlayer($isPlayer);
     if ($isPlayer) {
-      $player = $token != '' ? TokenAuthManager::getPlayer($request, $game, $token) : CookieAuthManager::getPlayer($request, $game);
+      $player = $token !== '' ? TokenAuthManager::getPlayer($request, $game, $token) : CookieAuthManager::getPlayer($request, $game);
       $gameContext->setPlayer($player);
     }
     yield $gameContext;

@@ -14,14 +14,14 @@ class CookieAuthManager {
 
   public static function isPlayer(Request $request, Game $game) : bool {
     $tokenCookie = $request->cookies->get(self::COOKIE_NAME);
-    $token = $tokenCookie ?: '';
+    $token = $tokenCookie ?: null;
 
     return TokenAuthManager::isPlayer($request, $game, $token);
   }
 
   public static function getPlayer(Request $request, Game $game) {
     $tokenCookie = $request->cookies->get(self::COOKIE_NAME);
-    $token = $tokenCookie ?: '';
+    $token = $tokenCookie ?: null;
 
     return TokenAuthManager::getPlayer($request, $game, $token);
   }
