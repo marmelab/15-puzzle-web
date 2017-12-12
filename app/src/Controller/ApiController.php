@@ -22,7 +22,6 @@ class ApiController extends Controller {
   private $serializer;
   private $api;
   private $gameRepository;
-  private $playerRepository;
 
   public function __construct(GameApi $gameApi, GameRepository $gameRepository, EntityManager $em) {
     $this->api = $gameApi;
@@ -56,17 +55,19 @@ class ApiController extends Controller {
       }
 
       return new JsonResponse([
+        'currentPlayer' => $player,
         'id' => $game->getId(),
         'isMultiplayer' => $game->getIsMultiplayer(),
-        'currentPlayer' => $player,
         'otherPlayer' => $otherPlayer,
+        'resolvedGrid' => $game->getResolvedGrid(),
         'winner' => $game->getWinner()
       ]);
     }
     return new JsonResponse([
+      'currentPlayer' => $player,
       'id' => $game->getId(),
       'isMultiplayer' => $game->getIsMultiplayer(),
-      'currentPlayer' => $player,
+      'resolvedGrid' => $game->getResolvedGrid(),
       'winner' => $game->getWinner()
     ]);
   }
@@ -90,7 +91,6 @@ class ApiController extends Controller {
 
     $currentGrid = $game->getPlayer1()->getCurrentGrid();
     $newPlayer = new Player($tokenGenerator->generate(), $currentGrid);
-    $this->playerRepository->save($newPlayer);
     $this->em->persist($newPlayer);
 
     $game->setPlayer2($newPlayer);
