@@ -112,15 +112,13 @@ class Game  implements \JsonSerializable {
 
   public function jsonSerialize() {
     return [
-      'game' => [
-        'id' => $this->getId(),
-        'resolvedGrid' => $this->getResolvedGrid(),
-        'player1' => $this->getPlayer1(),
-        'player2' => $this->getPlayer2(),
-        'winner' => $this->getWinner(),
-        'isMultiplayer' => $this->getIsMultiplayer(),
-        'isFull' => $this->isFull()
-      ]
+      'id' => $this->getId(),
+      'resolvedGrid' => $this->getResolvedGrid(),
+      'player1' => $this->getPlayer1(),
+      'player2' => $this->getPlayer2(),
+      'winner' => $this->getWinner(),
+      'isMultiplayer' => $this->getIsMultiplayer(),
+      'isFull' => $this->isFull()
     ];
   }
 }

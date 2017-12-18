@@ -22,7 +22,6 @@ class ApiController extends Controller {
   private $serializer;
   private $api;
   private $gameRepository;
-  private $playerRepository;
 
   public function __construct(GameApi $gameApi, GameRepository $gameRepository, EntityManager $em) {
     $this->api = $gameApi;
@@ -31,7 +30,8 @@ class ApiController extends Controller {
   }
 
   public function new(Request $request) {
-    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $request->get('mode') === 'multi');
+    $body = json_decode($request->getContent(), true);
+    $apiResponse = $this->api->new(self::DEFAULT_SIZE, $body['mode'] === 'multi');
     $this->em->persist($apiResponse['player']);
     $this->em->persist($apiResponse['game']);
     $this->em->flush();
@@ -42,7 +42,7 @@ class ApiController extends Controller {
     ]);
   }
 
-  public function game(GameContext $context) {
+  public function game(Request $request, GameContext $context) {
     $game = $context->getGame();
     $currentPlayer = $context->getPlayer();
     $player = $currentPlayer ?: $game->getPlayer1();
@@ -55,51 +55,42 @@ class ApiController extends Controller {
       }
 
       return new JsonResponse([
-        'id' => $game->getId(),
         'currentPlayer' => $player,
+        'id' => $game->getId(),
+        'isMultiplayer' => $game->getIsMultiplayer(),
         'otherPlayer' => $otherPlayer,
+        'resolvedGrid' => $game->getResolvedGrid(),
         'winner' => $game->getWinner()
       ]);
     }
     return new JsonResponse([
-      'id' => $game->getId(),
       'currentPlayer' => $player,
+      'id' => $game->getId(),
+      'isMultiplayer' => $game->getIsMultiplayer(),
+      'resolvedGrid' => $game->getResolvedGrid(),
       'winner' => $game->getWinner()
     ]);
   }
 
-  public function cancel(GameContext $context) {
+  public function cancel(Request $request, GameContext $context) {
     if ($context->getIsPlayer()) {
       $this->em->remove($context->getGame());
       $this->em->flush();
 
-      return new Response(
-        'Content',
-        Response::HTTP_OK,
-        ['content-type' => 'text/html']
-      );
+      return new Response('The game has been canceled with success', Response::HTTP_OK);
     }
-    return new Response(
-      'Content',
-      Response::HTTP_INTERNAL_SERVER_ERROR,
-      ['content-type' => 'text/html']
-    );
+    return new Response('An unexpected error occured', Response::HTTP_INTERNAL_SERVER_ERROR);
   }
 
-  public function join(GameContext $context, TokenGenerator $tokenGenerator) {
+  public function join(Request $request, GameContext $context, TokenGenerator $tokenGenerator) {
     $game = $context->getGame();
 
     if ($game->isFull()) {
-      return new Response(
-        'Content',
-        Response::HTTP_INTERNAL_SERVER_ERROR,
-        ['content-type' => 'text/html']
-      );
+      return new Response('The game is full', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     $currentGrid = $game->getPlayer1()->getCurrentGrid();
     $newPlayer = new Player($tokenGenerator->generate(), $currentGrid);
-    $this->playerRepository->save($newPlayer);
     $this->em->persist($newPlayer);
 
     $game->setPlayer2($newPlayer);
@@ -113,29 +104,29 @@ class ApiController extends Controller {
     ]);
   }
 
-  public function move(GameContext $context, int $tile) {
+  public function move(Request $request, GameContext $context, int $tile) {
     $game = $context->getGame();
-    $player = $context->getPlayer();
+    $currentPlayer = $context->getPlayer();
 
     if ($context->getIsPlayer() && $game->getWinner() === null) {
-      $apiResponse = $this->api->move($game, $player, $tile);
+      $apiResponse = $this->api->move($game, $currentPlayer, $tile);
       $this->em->persist($apiResponse['game']);
+      $this->em->persist($currentPlayer);
       $this->em->flush();
     }
 
     return new JsonResponse([
       'id' => $game->getId(),
-      'currentPlayer' => $this->serializer->serialize($player, 'json'),
-      'otherPlayer' => $this->serializer->serialize($otherPlayer, 'json'),
-      'winner' => $this->serializer->serialize($game->getWinner(), 'json')
+      'currentPlayer' => $currentPlayer,
+      'winner' => $game->getWinner()
     ]);
   }
 
-  public function games() {
+  public function games(Request $request) {
     $gameIds = $this->gameRepository->findOpenMultiplayerGames();
 
     return new JsonResponse([
-      'game_ids' => $gameIds
+      'gameIds' => $gameIds
     ]);
   }
 }

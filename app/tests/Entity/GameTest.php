@@ -100,19 +100,17 @@ class GameTest extends TestCase {
     $game->setPlayer2($player2);
 
     $expectedGameJson = [
-      'game' => [
-        'id' => 12,
-        'resolvedGrid' => array(
-          array(1, 2, 3),
-          array(4, 5, 6),
-          array(7, 8, 0)
-        ),
-        'player1' => $player1,
-        'player2' => $player2,
-        'winner' => null,
-        'isMultiplayer' => true,
-        'isFull' => true
-      ]
+      'id' => 12,
+      'resolvedGrid' => array(
+        array(1, 2, 3),
+        array(4, 5, 6),
+        array(7, 8, 0)
+      ),
+      'player1' => $player1,
+      'player2' => $player2,
+      'winner' => null,
+      'isMultiplayer' => true,
+      'isFull' => true
     ];
 
     $this->assertEquals($expectedGameJson, $game->jsonSerialize());
